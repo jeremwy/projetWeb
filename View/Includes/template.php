@@ -3,13 +3,19 @@
   <head>
     <meta charset="utf-8">
     <?php
-      foreach($dResponse["style"] as $url)
+      if(isset($dResponse["style"]))
       {
-        echo '<link rel="stylesheet" href="' . $url . '">';
+        foreach($dResponse["style"] as $url)
+        {
+          echo '<link rel="stylesheet" href="' . $url . '">';
+        }
       }
-      foreach($dResponse["font"] as $url)
+      if(isset($dResponse["font"]))
       {
-        echo '<link rel="stylesheet" href="' . $url . '">';
+        foreach($dResponse["font"] as $url)
+        {
+          echo '<link rel="stylesheet" href="' . $url . '">';
+        }
       }
     ?>
     <title><?php echo $dResponse["title"] ?></title>
@@ -20,5 +26,15 @@
           include_once($dResponse["viewFileName"]);
       ?>
     </div>
+    
+    <?php
+      if(isset($dResponse["js"]))
+      {
+        foreach($dResponse["js"] as $url)
+        {
+          echo '<script type="text/javascript" src="' . $url . '"></script>';
+        }
+      }
+    ?>
   </body>
 </html>

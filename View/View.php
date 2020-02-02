@@ -24,6 +24,7 @@ class View
         $this->dResponse["style"][0] = "http://localhost/PROJETWEB/src/css/styleConnexion.css";
         $this->dResponse["font"][0] ="https://fonts.googleapis.com/css?family=Poppins&display=swap";
         $this->dResponse["font"][1] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC&display=swap";
+        $this->dResponse["js"][0] = "test.js";
     }
 
     public function rend()
