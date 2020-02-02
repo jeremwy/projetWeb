@@ -5,12 +5,14 @@ class IndexController
 {
     public static function index()
     {
-        return new View("Index/index.html");
+        $dResponse["title"] = "Bienvenue";
+        return new View("Index/index.php", $dResponse);
     }
 
     public static function test()
     {
-        return new View("Index/test.html");
+        $dResponse = ["message" => "ok", "title" => "ok"];        
+        return new View("Index/test.php", $dResponse);
     }
 }
 ?>

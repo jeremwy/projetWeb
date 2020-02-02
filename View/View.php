@@ -1,14 +1,17 @@
 <?php
 class View
 {
-    private $content;
+    private $dResponse;
 
-    public function __construct($viewName)  //$viewName est de la forme "Index/index.html" ce qui désigne la vue "index.html" du dossier "Index"
+    public function __construct($viewName, $dReponse = [])  //$viewName est de la forme "Index/index.html" ce qui désigne la vue "index.html" du dossier "Index"
     {
         $viewFilename = "View/" . $viewName;
         if(file_exists($viewFilename))
         {
-            $this->content = file_get_contents($viewFilename);
+            $this->viewFilename = $viewFilename; 
+            $this->dResponse = $dReponse;
+            $this->dResponse["viewFileName"] = $viewFilename;
+            $this->init();                  
         }
         else
         {
@@ -16,9 +19,17 @@ class View
         }
     }
 
+    private function init()
+    {
+        $this->dResponse["style"][0] = "http://localhost/PROJETWEB/src/css/styleConnexion.css";
+        $this->dResponse["font"][0] ="https://fonts.googleapis.com/css?family=Poppins&display=swap";
+        $this->dResponse["font"][1] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC&display=swap";
+    }
+
     public function rend()
     {
-        echo $this->content;
+        $dResponse = $this->dResponse;
+        include_once("View/Includes/template.php");
     }
 }
 ?>
