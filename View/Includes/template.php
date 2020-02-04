@@ -3,36 +3,36 @@
   <head>
     <meta charset="utf-8">
     <?php
-      if(isset($dResponse["style"]))
+      if(isset($dReponse["style"]))
       {
-        foreach($dResponse["style"] as $url)
+        foreach($dReponse["style"] as $url)
         {
           echo '<link rel="stylesheet" href="' . $url . '">';
         }
       }
-      if(isset($dResponse["font"]))
+      if(isset($dReponse["font"]))
       {
-        foreach($dResponse["font"] as $url)
+        foreach($dReponse["font"] as $url)
         {
           echo '<link rel="stylesheet" href="' . $url . '">';
         }
       }
     ?>
-    <title><?php echo $dResponse["title"] ?></title>
+    <title><?php echo $dReponse["title"] ?></title>
   </head>
   <body>
     <div id="main">
       <?php
-          include_once($dResponse["viewFileName"]);
+          include_once($dReponse["viewFileName"]);
       ?>
     </div>
     
     <?php
-      if(isset($dResponse["js"]))
+      if(isset($dReponse["js"]))
       {
-        foreach($dResponse["js"] as $url)
+        foreach($dReponse["js"] as $url)
         {
-          echo '<script type="text/javascript" src="' . $url . '"></script>';
+          echo '<script type="text/javascript" src="' . SITE_ROOT . 'src/js/' .$url . '"></script>';
         }
       }
     ?>

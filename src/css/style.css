@@ -1,0 +1,75 @@
+html, body{
+  padding: 0px;
+  margin: 0px;
+}
+
+body{
+  background: #383838;
+}
+
+h1, p{
+  color: white;
+}
+
+h1{
+  font-family: 'Poppins', sans-serif;
+}
+
+li{
+  margin-top: 3.5%;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0px;
+}
+#main{
+  width: 960px;
+  margin: auto;
+  padding: 0px;
+  text-align: center;
+  text-align: center;
+  vertical-align: center;
+}
+
+.form{
+  color: white;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  background: #707070;
+  width: 40%;
+  margin: auto;
+  margin-top: 10%;
+  border: 5px solid #B0B0B0;
+  border-radius: 60px;
+}
+
+#labelConnexion{
+  font-size: 175%;
+  font-weight: bold;
+}
+
+#labelPas{
+  color: #DCDCDC;
+}
+
+.submitButton{
+  font-family: 'Bowlby One SC', cursive;
+  background: #33cc33;
+  border: 2px solid green;
+  border-radius: 20px;
+  width: 25%;
+  padding: 5px;
+}
+
+.inputTexte{
+  border-radius: 9px;
+  height: 20px;
+  width: 75%;
+  padding: 5px;
+  border: none;
+}
+
+.error{
+  color: #900505;
+}
