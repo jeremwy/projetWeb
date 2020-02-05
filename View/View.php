@@ -22,8 +22,7 @@ class View
     private function init()
     {
         $this->dReponse["style"][0] = "http://localhost/PROJETWEB/src/css/style.css";
-        $this->dReponse["font"][0] ="https://fonts.googleapis.com/css?family=Poppins&display=swap";
-        $this->dReponse["font"][1] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC&display=swap";
+        $this->dReponse["font"][0] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Poppins|Roboto:300&display=swap";
     }
 
     public function rend()

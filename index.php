@@ -1,6 +1,8 @@
 <?php
+    session_start();
     include_once("config.php");
     require_once("View/View.php");
+    require_once("View/RedirectView.php");
 
     $request = rtrim($_SERVER["REQUEST_URI"], "/"); //supprime le caractère final "/" qui peut poser problème pour l'analyse de la requète
     $path = explode("/", $request);
@@ -53,12 +55,15 @@
         }
         else
         {
-            $view = new View("Error/404.html");
+
+            $dReponse["title"] = "Page introuvable";
+            $view = new View("Error/404.html", $dReponse);
         }
     }
     else
     {
-        $view = new View("Error/404.html");
+        $dReponse["title"] = "Page introuvable";
+        $view = new View("Error/404.html", $dReponse);
     }
     $view->rend();
 ?>

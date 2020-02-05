@@ -15,14 +15,46 @@ h1{
   font-family: 'Poppins', sans-serif;
 }
 
-li{
-  margin-top: 3.5%;
+p, a, label
+{
+  font-family: 'Roboto', sans-serif;
 }
 
 ul {
   list-style-type: none;
   padding: 0px;
 }
+
+nav{
+  display: block;
+  padding: 20px 10px;
+  background: black;
+  color: white;
+}
+
+#navList{
+  list-style-type: none;
+  margin: 0px;
+}
+
+.navItem
+{
+  display: inline-block;
+  margin: 0px 10px;
+}
+
+.navItem::after
+{
+  clear: both;
+}
+
+.navItem > a
+{
+  color: white;
+  text-decoration: none;
+  font-family: 'Poppins', sans-serif;
+}
+
 #main{
   width: 960px;
   margin: auto;
@@ -53,13 +85,30 @@ ul {
   color: #DCDCDC;
 }
 
+.formField
+{
+  margin-top: 3.5%;
+}
+
 .submitButton{
   font-family: 'Bowlby One SC', cursive;
   background: #33cc33;
   border: 2px solid green;
   border-radius: 20px;
   width: 25%;
-  padding: 5px;
+  padding: 15px;
+}
+
+.jouerLink
+{
+  color: black;
+  font-family: 'Bowlby One SC', cursive;
+  background: #33cc33;
+  border: 2px solid green;
+  border-radius: 20px;
+  width: 25%;
+  padding: 15px;
+  text-decoration: none;
 }
 
 .inputTexte{

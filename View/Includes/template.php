@@ -21,6 +21,9 @@
     <title><?php echo $dReponse["title"] ?></title>
   </head>
   <body>
+    <?php
+      include_once("header.php");
+    ?>
     <div id="main">
       <?php
           include_once($dReponse["viewFileName"]);
