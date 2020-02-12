@@ -3,6 +3,7 @@ class User
 {
     private $nom;
     private $prenom;
+    private $id; //l'identifiant sert uniquement à référencer l'utilisateur dans les parties. Les clerfs primaires sont le nom et le prénom.
     private $motDePasse;
     private $inscription;
 
@@ -10,6 +11,7 @@ class User
     {
         $this->nom = $nom;
         $this->prenom = $prenom;
+        $this->id = generateString(25);
         $this->motDePasse = $motDePasse;
         if($inscription === NULL)
         {
@@ -18,8 +20,7 @@ class User
         else
         {
             $this->inscription = $inscription;
-        }
-        
+        }        
     }
 
     public function getNom()
@@ -31,6 +32,12 @@ class User
     {
         return $this->prenom;
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
 
     public function getMotDePasse()
     {
@@ -52,6 +59,11 @@ class User
         $this->prenom = $prenom;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
     public function setMotDePasse($motDePasse)
     {
         $this->motDePasse = $motDePasse;
@@ -61,5 +73,7 @@ class User
     {
         $this->inscription = $inscription;
     }
+
+    
 }
 ?>

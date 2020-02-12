@@ -4,11 +4,11 @@
         <?php
             if(!isset($_SESSION["user"]))
             {
-                echo '<li class="navItem"><a href="' . SITE_ROOT . 'User/login">Connexion</a></li>';
+                echo '<li class="navItem"><a href="' . SITE_ROOT . 'user/login">Connexion</a></li>';
             }
             else
             {
-                echo '<li class="navItem"><a href="' . SITE_ROOT . 'User/logout">Déconnexion</a></li>';
+                echo '<li class="navItem"><a href="' . SITE_ROOT . 'user/logout">Déconnexion</a></li>';
             }
         ?>
     </ul>

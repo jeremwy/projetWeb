@@ -22,20 +22,21 @@ class UserManager extends Manager
     public function saveUser()
     {
         //si la fonction ne retourne pas false, cela signifie que l'utilisateur existe et donc il faut retourner -1
-        if($this->getUser($this->user->nom, $this->user->prenom) != false)
+        if($this->getUser($this->user->getNom(), $this->user->getPrenom()) != false)
         {
             return -1;
         }
         //afin d'insérer un timestamp UNIX dans une base de donées mysql, il faut utiliser le fonction FROM_UNIXTIME qui permet de dire "la valeur est un timestamp unix" à la base de données
-        $stmt = $this->db->prepare("INSERT INTO Utilisateur VALUES (?, ?, ?, FROM_UNIXTIME(?))");
-        $stmt->bindValue(1, $this->user->getNom(), PDO::PARAM_STR);
-        $stmt->bindValue(2, $this->user->getPrenom(), PDO::PARAM_STR);
+        $stmt = $this->db->prepare("INSERT INTO Utilisateur VALUES (:nom, :prenom, :id, :motPasse, FROM_UNIXTIME(:dateInscription))");
+        $stmt->bindValue(":nom", $this->user->getNom(), PDO::PARAM_STR);
+        $stmt->bindValue(":prenom", $this->user->getPrenom(), PDO::PARAM_STR);
         /*
             On hash le mot de passe afin qu'il ne soit pas stocké en clair dans la base de données.
             Pour vérifier le mot de passe, il faudra utiliser "password_verify".
         */
-        $stmt->bindValue(3, password_hash($this->user->getMotDePasse(), PASSWORD_DEFAULT), PDO::PARAM_STR);
-        $stmt->bindValue(4, $this->user->getInscription());
+        $stmt->bindValue(":id", $this->user->getId(), PDO::PARAM_STR);
+        $stmt->bindValue(":motPasse", password_hash($this->user->getMotDePasse(), PASSWORD_DEFAULT), PDO::PARAM_STR);
+        $stmt->bindValue(":dateInscription", $this->user->getInscription());
 
         return $stmt->execute();
     }
@@ -47,7 +48,7 @@ class UserManager extends Manager
         {
             if(password_verify($this->user->getMotDePasse(), $userTmp->getMotDePasse()) == true)
             {
-                //on saubegarde l'utilisateur en session
+                //on sauvegarde l'utilisateur en session
                 $_SESSION["user"] = $userTmp;
                 return 1;
             }
@@ -73,9 +74,9 @@ class UserManager extends Manager
     {
         $stmt = $this->db->prepare("SELECT * 
                                     FROM Utilisateur
-                                    WHERE Nom=? AND Prenom=?");
-        $stmt->bindValue(1, $nom);
-        $stmt->bindValue(2, $prenom);
+                                    WHERE Nom=:nom AND Prenom=:prenom");
+        $stmt->bindValue(":nom", $nom);
+        $stmt->bindValue(":prenom", $prenom);
         $stmt->execute();
         /*
             On indique ici qu'il faut retourner une nouvelle instance de 'User' lors du parcourt des données.

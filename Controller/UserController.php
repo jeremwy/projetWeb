@@ -2,7 +2,7 @@
 <?php
 require_once("Model/UserManager.php");
 require_once("Model/Class/User.php");
-class UserController
+class UserController extends Controller
 {
     public static function signup()
     {
@@ -14,7 +14,7 @@ class UserController
             return new View("User/signup.php", $dReponse);
         }
         else{
-            //on vérifie si le formulaire est correcte (c'est-à-dire qu'il ne manque pas de champs et qu'aucun n'autre n'a été ajouté)
+            //on vérifie si le formulaire est correct (c'est-à-dire qu'il ne manque pas de champs et qu'aucun n'autre n'a été ajouté)
             if(count($_POST) != 4)
             {
                 //s'il manque un champs, on retourne le formulaire vide pour que l'utilisateur puisse le remplir de nouveau
@@ -67,8 +67,8 @@ class UserController
             $result = $userManager->saveUser();
             if($result == 1)
             {
-                $dReponse["title"] = "Inscription réussi";
-                $dReponse["message"] = "Inscription réussi.";
+                $dReponse["title"] = "Inscription réussie";
+                $dReponse["message"] = "Inscription réussie.";
                 return new View("Message.php", $dReponse);
             }
             else if($result == -1)

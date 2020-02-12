@@ -8,7 +8,6 @@ class View
         $viewFilename = "View/" . $viewName;
         if(file_exists($viewFilename))
         {
-            $this->viewFilename = $viewFilename; 
             $this->dReponse = $dReponse;
             $this->dReponse["viewFileName"] = $viewFilename;
             $this->init();                  
