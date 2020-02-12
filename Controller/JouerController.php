@@ -1,4 +1,6 @@
 <?php
+require_once("Model/PartieManager.php");
+require_once("Model/Class/Partie.php");
 class JouerController extends Controller
 {
 
@@ -7,8 +9,9 @@ class JouerController extends Controller
         $dReponse["title"] = "Jouer";
         if(parent::isConnected())
         {            
-            $dReponse["message"] = "ok";
-            return new View("Message.php", $dReponse);
+            $manager = new PartieManager();
+            $dReponse["parties"] = $manager->getParties();
+            return new View("Partie/ChoisirPartie.php", $dReponse);
         }
         else
         {

@@ -15,7 +15,7 @@ h1{
   font-family: 'Poppins', sans-serif;
 }
 
-p, a, label
+p, a, label, td
 {
   font-family: 'Roboto', sans-serif;
 }
@@ -81,7 +81,7 @@ nav{
   font-weight: bold;
 }
 
-#labelPas{
+.whiteLink{
   color: #DCDCDC;
 }
 
@@ -95,8 +95,9 @@ nav{
   background: #33cc33;
   border: 2px solid green;
   border-radius: 20px;
-  width: 25%;
+  width: 40%;
   padding: 15px;
+  color: black;
 }
 
 .jouerLink
@@ -121,4 +122,22 @@ nav{
 
 .error{
   color: #900505;
+}
+
+#tabParties{
+  border-collapse: collapse;
+  width: 100%;
+  color: white;
+  font-size: 20px;}
+
+#tabParties, #tabParties > thead > tr > td, .partieItem, .partieItem > td{
+  border: solid black 2px;
+}
+
+.partieInfo{
+  padding: 25px 15px;
+}
+
+#creerPartieDiv{
+  margin: 20px 0px;
 }

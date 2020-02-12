@@ -132,8 +132,8 @@ class UserController extends Controller
             if($result == 1)
             {
                 $dReponse["title"] = "Connexion réussi";
-                $dReponse["message"] = "Connexion réussi.";
-                return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
+                $dReponse["message"] = "Connexion réussi. Vous allez être redirigé(e)s.";
+                return new RedirectView("Message.php", SITE_ROOT . "jouer", 5, $dReponse);
             }
             else if($result == -1)
             {
@@ -155,7 +155,7 @@ class UserController extends Controller
         if(session_destroy())
         {
             $dReponse["title"] = "Déconnexion réussie";
-            $dReponse["message"] = "Déconnexion réussie.";
+            $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
             return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
         }
         else

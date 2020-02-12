@@ -16,7 +16,7 @@
       <input type="submit" value="JOUER" class="submitButton"/>
     </li>
     <li class="formField">
-      <a href="<?php echo SITE_ROOT ?>User/signup" id="labelPas">Pas de compte ? Créez-en un nouveau.</a>
+      <a href="<?php echo SITE_ROOT ?>User/signup" class="whiteLink">Pas de compte ? Créez-en un nouveau.</a>
     </li>
   </ul>
   <div id="errors">
