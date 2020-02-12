@@ -1,7 +1,7 @@
 <?php
 class Controller
 {
-    protected function isConnected()
+    protected static function isConnected()
     {
         if(isset($_SESSION["user"]))
         {

@@ -5,7 +5,7 @@ class IndexController extends Controller
     public static function index()
     {
         $dReponse["title"] = "Bienvenue";
-        if(isset($_SESSION["user"]))
+        if(parent::isConnected())
         {
             return new View("Index/index.php", $dReponse);
         }
