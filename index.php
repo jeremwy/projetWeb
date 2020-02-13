@@ -1,6 +1,6 @@
 <?php
-    session_start();
     require_once("loader.php");
+    session_start();    
 
     $request = rtrim($_SERVER["REQUEST_URI"], "/"); //supprime le caractère final "/" qui peut poser problème pour l'analyse de la requète
     $path = explode("/", $request);

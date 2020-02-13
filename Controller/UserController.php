@@ -34,7 +34,7 @@ class UserController extends Controller
                 else if($key != "password" && $key != "passwordRepeat")
                 {
                     $var = trim($var);
-                    //on conserve les informations renseignées par l'utilisateur. Cela permettra de les réafficheer dans le formulaire s'il doit etre réaffiché
+                    //on conserve les informations renseignées par l'utilisateur. Cela permettra de les réafficher dans le formulaire s'il doit etre réaffiché
                     $dReponse["form"]["data"][$key] = htmlspecialchars($var);
                 }
                 //on concerve les données dans un tableau. Ce tableau servira pour la sauvegarde dans la base de données

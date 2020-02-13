@@ -22,5 +22,31 @@ class PartieMAnager extends Manager
         $parties = $stmt->fetchAll();
         return $parties;
     }
+
+    public function setPartie($partie)
+    {
+        $this->partie = $partie;
+    }
+
+    //indique si l'identifiant est déjà utilisé
+    public function isIdUsed($id)
+    {
+        $stmt = $this->db->prepare("SELECT *
+                                    FROM partie
+                                    WHERE id=:id");
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return !($result == false);
+    }
+
+    public function savePartie()
+    {
+        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, 0)");
+        $stmt->bindValue(":id", $this->partie->getId());
+        $stmt->bindValue(":maitre", $this->partie->getMaitre());
+        
+        return $stmt->execute();
+    }
 }
 ?>
