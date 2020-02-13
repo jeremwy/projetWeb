@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 12 fév. 2020 à 16:57
+-- Généré le :  jeu. 13 fév. 2020 à 15:15
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -31,9 +31,17 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `partie`;
 CREATE TABLE IF NOT EXISTS `partie` (
   `id` varchar(25) COLLATE utf8_bin NOT NULL,
-  `maitre` varchar(25) COLLATE utf8_bin NOT NULL,
+  `maitre` varchar(25) COLLATE utf8_bin DEFAULT NULL,
+  `enCours` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Déchargement des données de la table `partie`
+--
+
+INSERT INTO `partie` (`id`, `maitre`, `enCours`) VALUES
+('partie1', NULL, 0);
 
 -- --------------------------------------------------------
 
