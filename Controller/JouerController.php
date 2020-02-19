@@ -4,28 +4,43 @@ require_once("Model/Class/Partie.php");
 class JouerController extends Controller
 {
 
+    /*
+        Dans cette classe toutes les méthodes vont d'abord vérifier si l'utilisateur est connécté.
+        Si ce n'est pas le cas, la vue de login sera sera retournée
+    */
+
     public static function index()
     {
         $dReponse["title"] = "Jouer";
-        if(parent::isConnected())
-        {            
-            $manager = new PartieManager();
-            $dReponse["parties"] = $manager->getParties();
-            return new View("Jouer/choisirPartie.php", $dReponse);
+        if(!parent::isConnected())
+        {     
+            return new View("User/login.php", $dReponse);            
         }
         else
         {
-            return new View("User/login.php", $dReponse);
+            $manager = new PartieManager();
+            $dReponse["parties"] = $manager->getParties();
+            return new View("Jouer/choisirPartie.php", $dReponse);
         }        
     }
 
     public static function creer()
     {
+        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+        {
+            $dReponse["title"] = "Impossible de créer une partie";
+            $dReponse["message"] = "Vous ne pouvez pas créer de partie car vous en avez déjà rejoint une.";
+            return new View("Message.php", $dReponse);
+        }
+        $dReponse["title"] = "Créer une partie";
+        if(!parent::isConnected())
+        {            
+            return new View("User/login.php", $dReponse);
+        }
         //si aucun formualire n'a été envoyé
         if(!isset($_POST) || empty($_POST))
         {
             $dReponse["js"][0] = "creerPartieCheck.js";
-            $dReponse["title"] = "Créer une partie";
             return new View("Jouer/creerPartie.php", $dReponse);
         }
         else
@@ -34,7 +49,6 @@ class JouerController extends Controller
             if(count($_POST) != 2)
             {
                 $dReponse["js"][0] = "creerPartieCheck.js";
-                $dReponse["title"] = "Créer une partie";
                 return new View("Jouer/creerPartie.php", $dReponse);
             }
             if($_POST["nomPartie"] === "" || ($_POST["maitre"] != "oui" && $_POST["maitre"] != "non"))
@@ -58,7 +72,6 @@ class JouerController extends Controller
             {
                 //on retourne la vue pour que l'utilisateur corrige l'erreur.
                 $dReponse["js"][0] = "creerPartieCheck.js";
-                $dReponse["title"] = "Créer une partie";
                 return new View("Jouer/creerPartie.php", $dReponse);
             }
             
@@ -68,7 +81,6 @@ class JouerController extends Controller
             if($manager->isIdUsed($partieData["nomPartie"]))
             {
                 $dReponse["js"][0] = "creerPartieCheck.js";
-                $dReponse["title"] = "Créer une partie";
                 $dReponse["form"]["message"][0] = "Le nom de partie est déjà utilisé.";
                 return new View("Jouer/creerPartie.php", $dReponse); 
             }
@@ -79,6 +91,7 @@ class JouerController extends Controller
             $result = $manager->savePartie();
             if($result == 1)
             {
+                $_SESSION["partie"]["id"] = $partie->getId();
                 $n = 5;
                 $dReponse["title"] = "Partie créée";
                 $dReponse["message"] = "Partie créée. Vous allez être redirigé(e) vers la pas de la partie dans " . $n . " secondes.";
@@ -87,7 +100,7 @@ class JouerController extends Controller
             else
             {
                 $dReponse["title"] = "Erreur";
-                $dReponse["message"] = "Une erreur est survenue lors de la création de la partie";
+                $dReponse["message"] = "Une erreur est survenue lors de la création de la partie.";
                 return new View("Message.php", $dReponse);
             }
             
@@ -95,6 +108,32 @@ class JouerController extends Controller
     }
 
     public static function loby()
+    {
+        if(!parent::isConnected())
+        {            
+            $dReponse["title"] = "Connexion";
+            return new View("User/login.php", $dReponse);  
+        }
+        else{
+            $idPartie = $_GET["id"];
+            $manager = new PartieManager();
+            
+            if($manager->isIdUsed($idPartie))
+            {
+                $dReponse["title"] = "Partie " . htmlspecialchars($idPartie);
+                $dReponse["js"][0] = "selectionBouton.js";
+                return new View("Jouer/loby.php", $dReponse);
+            }
+            else
+            {
+                $dReponse["title"] = "Partie introuvable";
+                $dReponse["message"] = "La partie est introuvable.";
+                return new View("Message.php", $dReponse);
+            }
+        }        
+    }
+
+    public static function selectRole()
     {
         
     }

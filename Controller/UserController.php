@@ -1,6 +1,7 @@
 
 <?php
 require_once("Model/UserManager.php");
+require_once("Model/PartieManager.php");
 require_once("Model/Class/User.php");
 class UserController extends Controller
 {
@@ -131,6 +132,15 @@ class UserController extends Controller
             $result = $userManager->login();
             if($result == 1)
             {
+                $partieManager = new PartieManager();
+                $partieId = $partieManager->getUserPartieId($_SESSION["user"]->getId());
+                
+                if($partieId != false)
+                {
+                    //attention : $partieId est un tableau qui contient une case [0] et une case  ["id"] (les deux cases ont le même contenu).
+                    $_SESSION["partie"]["id"] = $partieId["id"];
+                }
+
                 $dReponse["title"] = "Connexion réussi";
                 $dReponse["message"] = "Connexion réussi. Vous allez être redirigé(e)s.";
                 return new RedirectView("Message.php", SITE_ROOT . "jouer", 5, $dReponse);

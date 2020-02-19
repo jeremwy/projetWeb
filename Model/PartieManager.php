@@ -1,7 +1,7 @@
 <?php
 require_once("Manager.php");
 require_once("Class/Partie.php");
-class PartieMAnager extends Manager
+class PartieManager extends Manager
 {
     private $partie;
 
@@ -48,5 +48,16 @@ class PartieMAnager extends Manager
         
         return $stmt->execute();
     }
+
+    //retourne l'id de la partie dans lequel est l'utilisateur. Retourn false sinon.
+    public function getUserPartieId($userId)
+    {
+        $stmt = $this->db->prepare("SELECT id
+                                    FROM partie
+                                    WHERE :userId=maitre"); //après il faut rajouter "OR :userId=pompier OR :userId=police ...".
+        $stmt->bindValue(":userId", $userId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }    
 }
 ?>
