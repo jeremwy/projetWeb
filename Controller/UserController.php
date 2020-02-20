@@ -164,23 +164,32 @@ class UserController extends Controller
     {
         $partieManager = new PartieManager();
         //il faut absolument appeler cette méthode avant de tenter de supprimer la session car après, l'id de la partie stocké en session sera inaccessible
-        $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
-        if(session_destroy())
-        {            
-            //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
-            if($_SESSION["user"]->getId() == $maitrePartieJoueur)
-            {
-                $partieManager->supprimerPartie($_SESSION["user"]->getId());
+        if(isset($_SESSION["user"]) && !empty($_SESSION["user"]))
+        {    
+            if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+                $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
+            if(session_destroy())
+            {            
+                //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
+                if($_SESSION["user"]->getId() == $maitrePartieJoueur)
+                {
+                    $partieManager->supprimerPartie($_SESSION["user"]->getId());
+                }
+                $dReponse["title"] = "Déconnexion réussie";
+                $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
+                return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
             }
-            $dReponse["title"] = "Déconnexion réussie";
-            $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
-            return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
+            else
+            {
+                $dReponse["title"] = "Déconnexion échouée";
+                $dReponse["message"] = "Déconnexion échouée, une erreur est survenue.";
+                return new View("Message.php", $dReponse);
+            }
         }
         else
         {
-            $dReponse["title"] = "Déconnexion échouée";
-            $dReponse["message"] = "Déconnexion échouée, une erreur est survenue.";
-            return new View("Message.php", $dReponse);
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
         }
     }
 }

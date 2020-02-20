@@ -52,10 +52,12 @@ class PartieManager extends Manager
     //retourne l'id de la partie dans lequel est l'utilisateur. Retourn false sinon.
     public function getUserPartieId($userId)
     {
+        $n = 4;
         $stmt = $this->db->prepare("SELECT id
                                     FROM partie
-                                    WHERE :userId=maitre"); //après il faut rajouter "OR :userId=pompier OR :userId=police ...".
-        $stmt->bindValue(":userId", $userId);
+                                    WHERE maitre=:userId1 OR chefPompier=:userId2 OR chefPolicier=:userId3 OR chefMedecin=:userId4"); //après il faut rajouter "OR :userId=pompier OR :userId=police ...".
+        for($i = 1; $i <= 4; $i++)
+            $stmt->bindValue(":userId" . $i, $userId);
         $stmt->execute();
         return $stmt->fetch();
     }
@@ -77,6 +79,28 @@ class PartieManager extends Manager
                                     WHERE maitre=:maitreId");
         $stmt->bindValue(":maitreId", $maitreId);        
         $stmt->execute();
+    }
+
+    public function addRole($role, $user, $partieId)
+    {
+        
+        $stmt = $this->db->prepare("UPDATE partie
+                                    SET " . $role . "=:user
+                                    WHERE id=:partieId AND " . $role . " is null");
+        $stmt->bindValue(":user", $user);
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+        return $count = $stmt->rowCount();
+    }
+
+    public function getRoles($partieId)
+    {
+        $stmt = $this->db->prepare("SELECT maitre, chefPompier, chefPolicier, chefMedecin
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+        return $stmt->fetch( PDO::FETCH_ASSOC );
     }
 }
 ?>

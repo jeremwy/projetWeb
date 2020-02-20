@@ -1,6 +1,7 @@
 <?php
 require_once("Model/PartieManager.php");
 require_once("Model/Class/Partie.php");
+require_once("View/AjaxView.php");
 class JouerController extends Controller
 {
 
@@ -91,9 +92,11 @@ class JouerController extends Controller
             $result = $manager->savePartie();
             if($result == 1)
             {
-                $_SESSION["partie"]["id"] = $partie->getId();
                 if($_POST["maitre"] === "oui")
-                    $_SESSION["partie"]["role"] = "maitre";
+                {
+                    $_SESSION["partie"]["id"] = $partie->getId();
+                    $_SESSION["partie"]["role"][0] = "maitre";
+                }                    
                 $n = 5;
                 $dReponse["title"] = "Partie créée";
                 $dReponse["message"] = "Partie créée. Vous allez être redirigé(e) vers la pas de la partie dans " . $n . " secondes.";
@@ -116,28 +119,73 @@ class JouerController extends Controller
             $dReponse["title"] = "Connexion";
             return new View("User/login.php", $dReponse);  
         }
-        else{
-            $idPartie = $_GET["id"];
-            $manager = new PartieManager();
-            
-            if($manager->isIdUsed($idPartie))
-            {
-                $dReponse["title"] = "Partie " . htmlspecialchars($idPartie);
-                $dReponse["js"][0] = "selectionBouton.js";
-                return new View("Jouer/loby.php", $dReponse);
-            }
-            else
-            {
-                $dReponse["title"] = "Partie introuvable";
-                $dReponse["message"] = "La partie est introuvable.";
-                return new View("Message.php", $dReponse);
-            }
-        }        
+        $idPartie = $_GET["id"];
+        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] != $idPartie)
+        {
+            $dReponse["title"] = "Impossible de rejoindre cette partie";
+            $dReponse["message"] = "Impossible de rejoindre cette partie car vous êtes déjà dans une autre partie.";
+            return new View("Message.php", $dReponse);
+        }
+        else
+        $manager = new PartieManager();
+        
+        if($manager->isIdUsed($idPartie))
+        {
+            $dReponse["title"] = htmlspecialchars($idPartie);
+            $dReponse["js"][0] = "selectionBouton.js";
+            return new View("Jouer/loby.php", $dReponse);
+        }
+        else
+        {
+            $dReponse["title"] = "Partie introuvable";
+            $dReponse["message"] = "La partie est introuvable.";
+            return new View("Message.php", $dReponse);
+        } 
     }
 
     public static function selectRole()
     {
-        
+        //si l'utilisateur n'est pas dans une autre partie ou est dans la partie
+        if(!(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"])) || (isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] == $_POST["partieId"]))
+        {
+            //si un rôle a été envoyé
+            if(isset($_POST["role"]) && !empty($_POST["role"]))
+            {
+                $role = $_POST["role"];
+
+                switch($_POST["role"])
+                {
+                    case "Maître du jeu":
+                        $role = "maitre";
+                        break;
+                    case "Pompier":
+                        $role = "chefPompier";
+                        break;
+                    case "Policier":
+                        $role = "chefPolicier";
+                        break;
+                    case "Médecin":
+                        $role = "chefMedecin";
+                        break;
+                    default:
+                        $role = NULL;
+                }
+
+                if($role != NULL)
+                {
+                    $manager = new PartieManager();
+                    $result = $manager->addRole($role, $_SESSION["user"]->getId(), $_POST["partieId"]);
+                    echo $result;
+                    if($result)
+                    {
+                        $_SESSION["partie"]["id"] = $_POST["partieId"];
+                        $_SESSION["partie"][$role] = $_SESSION["user"]->getId();
+                        return new AjaxView("1", "text");
+                    }
+                }            
+            }
+        }
+        return new AjaxView("0", "text");
     }
 
     public static function partie()
@@ -146,6 +194,31 @@ class JouerController extends Controller
         $dReponse["title"] = "Jouer";
         $dReponse["js"][0] = "chatEnvoyer.js";
         return new View("Jouer/plateauPartie.php", $dReponse);
+    }
+
+    //cette fonction retourne un tableau qui indique pour chaque rôle s'il est libre ou non et si c'est l'utilisateur en cours qui détient le rôle de la partie
+    public static function getRoles()
+    {
+        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+        {
+            $manager = new PartieManager();
+            $roles = $manager->getRoles($_SESSION["partie"]["id"]);
+            foreach($roles as $role => $user)
+            {
+                //si l'utilisateur qui a le rôle l'utilisateur qui est connecté alors on met "choisi"
+                if($user == $_SESSION["user"]->getId())
+                    $roles[$role] = "choisi";
+                //s'il s'agit d'un autre utilisateur non nul on met "indisponible"
+                else if($user != NULL)
+                    $roles[$role] = "indisponible";
+                //si l'utilisateur est nul on met "libre"
+                else
+                    $roles[$role] = "libre";
+            }
+                
+            return new AjaxView(json_encode($roles), "json");
+        }
+        return new AjaxView("0", "text");
     }
 }
 ?>

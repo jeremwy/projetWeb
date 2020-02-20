@@ -172,14 +172,18 @@ nav{
   opacity: 1;
 }
 
-.boutonActive{
+.choisi, .indisponible{
+  opacity: 1;
+}
+
+.choisi{
   color: #35D0E8;
   border: #35D0E8 solid 7px;
 }
 
-.boutonInactive{
-  color: #023C45;
-  border: #023C45 solid 7px;
+.indisponible{
+  color: red;
+  border: red solid 7px;
 }
 
 #chat{
