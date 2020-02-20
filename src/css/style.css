@@ -64,7 +64,7 @@ nav{
   vertical-align: center;
 }
 
-.form{
+.form, #chat{
   color: white;
   padding-top: 5%;
   padding-bottom: 5%;
@@ -180,4 +180,40 @@ nav{
 .boutonInactive{
   color: #023C45;
   border: #023C45 solid 7px;
+}
+
+#chat{
+  width: 250px;
+}
+
+#messages{
+  width: 90%;
+  margin: auto;
+  margin-bottom: 15px;
+  border: solid #B0B0B0 2px;
+  border-radius: 5px;
+  text-align: left;
+  font-size: 15px;
+  background: #b3b1b1;
+}
+
+#messages tbody{
+  display: block;
+  overflow: auto;
+  height: 120px;
+}
+
+#messages > tr{
+  display: inline-block;
+  width: 100%;
+  max-height: 20px;
+}
+
+#champsSaisieMessage{
+  width: 90%;
+}
+
+.userFrom{
+  color: black;
+  font-style: italic;
 }

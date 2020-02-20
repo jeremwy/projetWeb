@@ -162,8 +162,16 @@ class UserController extends Controller
 
     public static function logout()
     {
+        $partieManager = new PartieManager();
+        //il faut absolument appeler cette méthode avant de tenter de supprimer la session car après, l'id de la partie stocké en session sera inaccessible
+        $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
         if(session_destroy())
-        {
+        {            
+            //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
+            if($_SESSION["user"]->getId() == $maitrePartieJoueur)
+            {
+                $partieManager->supprimerPartie($_SESSION["user"]->getId());
+            }
             $dReponse["title"] = "Déconnexion réussie";
             $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
             return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);

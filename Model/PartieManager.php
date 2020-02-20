@@ -42,7 +42,7 @@ class PartieManager extends Manager
 
     public function savePartie()
     {
-        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, 0)");
+        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, NULL, NULL, NULL, 0)");
         $stmt->bindValue(":id", $this->partie->getId());
         $stmt->bindValue(":maitre", $this->partie->getMaitre());
         
@@ -58,6 +58,25 @@ class PartieManager extends Manager
         $stmt->bindValue(":userId", $userId);
         $stmt->execute();
         return $stmt->fetch();
-    }    
+    }
+    
+    public function getMaitre($partieId)
+    {
+        $stmt = $this->db->prepare("SELECT maitre
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);        
+        $stmt->execute();
+
+        return $stmt->fetch()[0];
+    }
+
+    public function supprimerPartie($maitreId)
+    {
+        $stmt = $this->db->prepare("DELETE FROM partie
+                                    WHERE maitre=:maitreId");
+        $stmt->bindValue(":maitreId", $maitreId);        
+        $stmt->execute();
+    }
 }
 ?>

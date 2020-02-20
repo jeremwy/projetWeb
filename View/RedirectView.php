@@ -1,8 +1,9 @@
 <?php
+require_once("iView.php");
 /*
     Cette classe permet de faire des vues qui vont rediriger l'utilisateur vers une url au bout de X secondes
 */
-class RedirectView extends View
+class RedirectView extends View implements iView
 {
     private $time;
     private $url;

@@ -92,6 +92,8 @@ class JouerController extends Controller
             if($result == 1)
             {
                 $_SESSION["partie"]["id"] = $partie->getId();
+                if($_POST["maitre"] === "oui")
+                    $_SESSION["partie"]["role"] = "maitre";
                 $n = 5;
                 $dReponse["title"] = "Partie créée";
                 $dReponse["message"] = "Partie créée. Vous allez être redirigé(e) vers la pas de la partie dans " . $n . " secondes.";
@@ -136,6 +138,14 @@ class JouerController extends Controller
     public static function selectRole()
     {
         
+    }
+
+    public static function partie()
+    {
+        //pour l'instant, on ne vérifie pas si la partie existe ni si l'utilisateur en fait partie. Il faudra faire cette vérification
+        $dReponse["title"] = "Jouer";
+        $dReponse["js"][0] = "chatEnvoyer.js";
+        return new View("Jouer/plateauPartie.php", $dReponse);
     }
 }
 ?>
