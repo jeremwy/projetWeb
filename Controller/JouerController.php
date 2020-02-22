@@ -192,7 +192,7 @@ class JouerController extends Controller
     {
         //pour l'instant, on ne vérifie pas si la partie existe ni si l'utilisateur en fait partie. Il faudra faire cette vérification
         $dReponse["title"] = "Jouer";
-        $dReponse["js"][0] = "chatEnvoyer.js";
+        $dReponse["js"][0] = "chat.js";
         return new View("Jouer/plateauPartie.php", $dReponse);
     }
 

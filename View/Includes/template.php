@@ -36,7 +36,7 @@
       {
         foreach($dReponse["js"] as $url)
         {
-          echo '<script type="text/javascript" src="' . SITE_ROOT . 'src/js/' .$url . '"></script>';
+          echo '<script src="' . SITE_ROOT . 'src/js/' .$url . '"></script>';
         }
       }
     ?>

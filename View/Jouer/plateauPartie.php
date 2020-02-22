@@ -1,9 +1,10 @@
 <h1><?php echo $dReponse["title"]; ?></h1>
 
 <div id="plateau">
-    <!-- ICI SERA LE PLATEAU -->
+    <div id="carte"></div>
+    
 </div>
 
-<aside id="chatContainer">
+<aside id="asideChat">
     <?php include("View/Chat/chat.php"); ?>
 </aside>
