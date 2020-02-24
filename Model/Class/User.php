@@ -6,16 +6,8 @@ class User
     private $id; //l'identifiant sert uniquement à référencer l'utilisateur dans les parties. Les clerfs primaires sont le nom et le prénom.
     private $motDePasse;
     private $inscription;
-    private $role;
 
-    /*   
-     Les rôles seront :
-        - 1 ChefPompier
-        - 2 ChefMedecin
-        - 3 ChefPolicier
-    */
-
-    public function __construct($nom = NULL, $prenom = NULL, $motDePasse = NULL, $inscription = NULL, $role = NULL)
+    public function __construct($nom = NULL, $prenom = NULL, $motDePasse = NULL, $inscription = NULL)
     {
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -29,7 +21,6 @@ class User
         {
             $this->inscription = $inscription;
         }        
-        $this->role=$role;
     }
 
     public function getNom()
@@ -47,6 +38,7 @@ class User
         return $this->id;
     }
 
+
     public function getMotDePasse()
     {
         return $this->motDePasse;
@@ -56,12 +48,6 @@ class User
     {
         return $this->inscription;
     }
-
-    public function getRole()
-    {
-        return $this->role;
-    }
-
 
     public function setNom($nom)
     {
@@ -88,43 +74,6 @@ class User
         $this->inscription = $inscription;
     }
 
-    public function setRole($role)
-    {
-        //$role = chiffre entre 1 et 3
-        if($role >= 1 && $role <=3)
-            $this->role = $role;
-    }
-
     
-    // Méthodes placements personnage et véhicule A COMPLETER AVEC x et y DANS LA GRILLE (PARTIE IMAGE)
-    public function placerVehicule($x, $y)
-    {
-        switch($role)
-        {
-            case 1 :
-                break;
-            case 2 :
-                break;
-            case 3 :
-                break;
-            default : 
-                break;
-        }
-    }
-
-    public function placerPersonnage($x, $y)
-    {
-        switch($role)
-        {
-            case 1 :
-                break;
-            case 2 :
-                break;
-            case 3 :
-                break;
-            default : 
-                break;
-        }
-    }
 }
 ?>

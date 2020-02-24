@@ -1,5 +1,6 @@
 <?php
-class View
+require_once("iView.php");
+class View implements iView
 {
     private $dReponse;
 
@@ -18,7 +19,7 @@ class View
         }
     }
 
-    private function init()
+    public function init()
     {
         $this->dReponse["style"][0] = "http://localhost/PROJETWEB/src/css/style.css";
         $this->dReponse["font"][0] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Poppins|Roboto:300&display=swap";

@@ -1,6 +1,7 @@
 
 <?php
 require_once("Model/UserManager.php");
+require_once("Model/PartieManager.php");
 require_once("Model/Class/User.php");
 class UserController extends Controller
 {
@@ -131,6 +132,15 @@ class UserController extends Controller
             $result = $userManager->login();
             if($result == 1)
             {
+                $partieManager = new PartieManager();
+                $partieId = $partieManager->getUserPartieId($_SESSION["user"]->getId());
+                
+                if($partieId != false)
+                {
+                    //attention : $partieId est un tableau qui contient une case [0] et une case  ["id"] (les deux cases ont le même contenu).
+                    $_SESSION["partie"]["id"] = $partieId["id"];
+                }
+
                 $dReponse["title"] = "Connexion réussi";
                 $dReponse["message"] = "Connexion réussi. Vous allez être redirigé(e)s.";
                 return new RedirectView("Message.php", SITE_ROOT . "jouer", 5, $dReponse);
@@ -152,17 +162,34 @@ class UserController extends Controller
 
     public static function logout()
     {
-        if(session_destroy())
-        {
-            $dReponse["title"] = "Déconnexion réussie";
-            $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
-            return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
+        $partieManager = new PartieManager();
+        //il faut absolument appeler cette méthode avant de tenter de supprimer la session car après, l'id de la partie stocké en session sera inaccessible
+        if(isset($_SESSION["user"]) && !empty($_SESSION["user"]))
+        {    
+            if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+                $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
+            if(session_destroy())
+            {            
+                //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
+                if($_SESSION["user"]->getId() == $maitrePartieJoueur)
+                {
+                    $partieManager->supprimerPartie($_SESSION["user"]->getId());
+                }
+                $dReponse["title"] = "Déconnexion réussie";
+                $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
+                return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
+            }
+            else
+            {
+                $dReponse["title"] = "Déconnexion échouée";
+                $dReponse["message"] = "Déconnexion échouée, une erreur est survenue.";
+                return new View("Message.php", $dReponse);
+            }
         }
         else
         {
-            $dReponse["title"] = "Déconnexion échouée";
-            $dReponse["message"] = "Déconnexion échouée, une erreur est survenue.";
-            return new View("Message.php", $dReponse);
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
         }
     }
 }

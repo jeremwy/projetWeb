@@ -1,7 +1,7 @@
 <?php
 require_once("Manager.php");
 require_once("Class/Partie.php");
-class PartieMAnager extends Manager
+class PartieManager extends Manager
 {
     private $partie;
 
@@ -42,11 +42,65 @@ class PartieMAnager extends Manager
 
     public function savePartie()
     {
-        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, 0)");
+        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, NULL, NULL, NULL, 0)");
         $stmt->bindValue(":id", $this->partie->getId());
         $stmt->bindValue(":maitre", $this->partie->getMaitre());
         
         return $stmt->execute();
+    }
+
+    //retourne l'id de la partie dans lequel est l'utilisateur. Retourn false sinon.
+    public function getUserPartieId($userId)
+    {
+        $n = 4;
+        $stmt = $this->db->prepare("SELECT id
+                                    FROM partie
+                                    WHERE maitre=:userId1 OR chefPompier=:userId2 OR chefPolicier=:userId3 OR chefMedecin=:userId4"); //après il faut rajouter "OR :userId=pompier OR :userId=police ...".
+        for($i = 1; $i <= 4; $i++)
+            $stmt->bindValue(":userId" . $i, $userId);
+        $stmt->execute();
+        return $stmt->fetch();
+    }
+    
+    public function getMaitre($partieId)
+    {
+        $stmt = $this->db->prepare("SELECT maitre
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);        
+        $stmt->execute();
+
+        return $stmt->fetch()[0];
+    }
+
+    public function supprimerPartie($maitreId)
+    {
+        $stmt = $this->db->prepare("DELETE FROM partie
+                                    WHERE maitre=:maitreId");
+        $stmt->bindValue(":maitreId", $maitreId);        
+        $stmt->execute();
+    }
+
+    public function addRole($role, $user, $partieId)
+    {
+        
+        $stmt = $this->db->prepare("UPDATE partie
+                                    SET " . $role . "=:user
+                                    WHERE id=:partieId AND " . $role . " is null");
+        $stmt->bindValue(":user", $user);
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+        return $count = $stmt->rowCount();
+    }
+
+    public function getRoles($partieId)
+    {
+        $stmt = $this->db->prepare("SELECT maitre, chefPompier, chefPolicier, chefMedecin
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+        return $stmt->fetch( PDO::FETCH_ASSOC );
     }
 }
 ?>

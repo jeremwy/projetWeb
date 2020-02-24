@@ -11,7 +11,7 @@
     <?php
     foreach($dReponse["parties"] as $partie)
     {
-        echo '<tr class="partieItem"><td class="partieInfo">' . $partie->getId() . '</td><td class="partieInfo">' . $partie->getNbJoueur() . '/7</td><td class="partieInfo"><a class="submitButton" href="' . SITE_ROOT . 'jouer/partie?id=' . $partie->getId() . '">Jouer</a></td></tr>';
+        echo '<tr class="partieItem"><td class="partieInfo">' . $partie->getId() . '</td><td class="partieInfo">' . $partie->getNbJoueur() . '/7</td><td class="partieInfo"><a class="submitButton" href="' . SITE_ROOT . 'jouer/loby?id=' . $partie->getId() . '">Jouer</a></td></tr>';
     }
     ?>
 </table>

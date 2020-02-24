@@ -15,6 +15,28 @@
     array_shift($path); //contient maintenant "projetWeb" et "index"
     array_shift($path); //contient maintenant "index"
 
+    /*
+        Si l'on passe des informations dans l'url (via GET) alors l'url va être de la forme : "Controller/method?var1=var1&var2=var2".
+        Si l'on ignore pas la partie pour les informations dans l'url alors notre système de routage va alors tenter d'appeler la méthode 
+        "method?var1=var1&var2=var2" du contrôler "Controller".
+        Ci-dessous, on parcourt le tableau contenant la route ($path) et on nettoie les variables qui pourrait contenir des informations pour GET.
+    */
+    if(isset($_GET) && !empty($_GET))
+    {
+        /*
+           Si la dernière case du tableau $path contient des informations pour GET (infomations dans l'url) alors on "explode" ("découpe") le contenu de la case
+           avec pour séparateur "?" ainsi, la première case retourner par explode sera le nom attendu sans les informations pour GET.
+
+           Ex: si $path[1] = "method?var1=toto" alors explode("?", $path[1]) retourne le tableau ["method", "var1=toto"]. Ilsuffit de récupérer la première case
+           de ce tableau pour avoir le nom de la métthode.
+
+           (Il n'y a besoin de verifier que la dernière case uniquement car les informations sont toujours passées en fin d'URL)
+        */
+        $i = sizeof($path);
+        $path[$i-1] = explode("?", $path[$i-1])[0];
+
+    }
+
     switch (count($path))
     {
         case 2:

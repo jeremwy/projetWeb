@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  jeu. 13 fév. 2020 à 15:15
+-- Généré le :  mer. 19 fév. 2020 à 16:18
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -25,6 +25,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `chat`
+--
+
+DROP TABLE IF EXISTS `chat`;
+CREATE TABLE IF NOT EXISTS `chat` (
+  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) COLLATE utf8_bin NOT NULL,
+  `partie` varchar(255) COLLATE utf8_bin NOT NULL,
+  `message` varchar(500) COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Déchargement des données de la table `chat`
+--
+
+INSERT INTO `chat` (`id`, `user_id`, `partie`, `message`) VALUES
+(1, 'aTOPdVMrpA7dvMBWzfwb4wmXN', 'test', 'htfhfth');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `partie`
 --
 
@@ -32,6 +54,9 @@ DROP TABLE IF EXISTS `partie`;
 CREATE TABLE IF NOT EXISTS `partie` (
   `id` varchar(25) COLLATE utf8_bin NOT NULL,
   `maitre` varchar(25) COLLATE utf8_bin DEFAULT NULL,
+  `chefPompier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `chefPolicier` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `chefMedecin` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `enCours` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -40,8 +65,8 @@ CREATE TABLE IF NOT EXISTS `partie` (
 -- Déchargement des données de la table `partie`
 --
 
-INSERT INTO `partie` (`id`, `maitre`, `enCours`) VALUES
-('partie1', NULL, 0);
+INSERT INTO `partie` (`id`, `maitre`, `chefPompier`, `chefPolicier`, `chefMedecin`, `enCours`) VALUES
+('test', 'aTOPdVMrpA7dvMBWzfwb4wmXN', '', '', '', 0);
 
 -- --------------------------------------------------------
 
