@@ -27,5 +27,6 @@ class  ChatController extends Controller{
             return new AjaxView(json_encode($message), "json");
         }
     }
+    //test
 }
 ?>
