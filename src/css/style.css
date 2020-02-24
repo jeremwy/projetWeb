@@ -66,6 +66,10 @@ nav{
   padding: 0px;
 }
 
+#paraJouerLink{
+  text-align: center;
+}
+
 .form, #chat{
   color: white;
   padding-top: 5%;
