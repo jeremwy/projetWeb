@@ -1,2 +1,2 @@
 <h1><?php echo $dReponse["title"]; ?></h1>
-<p><?php echo $dReponse["message"]; ?></p>
+<p class="paraCenter"><?php echo $dReponse["message"]; ?></p>

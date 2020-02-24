@@ -23,14 +23,14 @@
     <?php
       if(isset($dReponse["form"]["emptyField"]) && $dReponse["form"]["emptyField"] == 1)
       {
-        echo '<p class="error">Erreur : Tous les champs doivent être remplis.</p>';
+        echo '<p class="error paraCenter">Erreur : Tous les champs doivent être remplis.</p>';
       }
       //s'il y a des messages à afficher
       if(isset($dReponse["form"]["message"]))
       {
         foreach($dReponse["form"]["message"] as $message)
         {
-          echo '<p class="error">Erreur : ' . $message . '</p>';
+          echo '<p class="error paraCenter">Erreur : ' . $message . '</p>';
         }
       }        
     ?>

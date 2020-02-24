@@ -167,14 +167,16 @@ class UserController extends Controller
         if(isset($_SESSION["user"]) && !empty($_SESSION["user"]))
         {    
             if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+            {
                 $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
-            if(session_destroy())
-            {            
                 //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
                 if($_SESSION["user"]->getId() == $maitrePartieJoueur)
                 {
                     $partieManager->supprimerPartie($_SESSION["user"]->getId());
                 }
+            }
+            if(session_destroy())
+            {
                 $dReponse["title"] = "Déconnexion réussie";
                 $dReponse["message"] = "Déconnexion réussie. Vous allez être redirigé(e)s.";
                 return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
