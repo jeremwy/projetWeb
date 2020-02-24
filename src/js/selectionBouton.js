@@ -6,6 +6,7 @@ function getRoles() {
         $.ajax( {
             url: urlGetRoles,
             success: function(result) {
+                console.log(result);
                 for (let [role, valeur] of Object.entries(result)) {
                     $( "#"+role ).attr("class", "boutonChoix "+valeur);
                 }
@@ -16,7 +17,7 @@ function getRoles() {
 
 $(function() {
     getRoles();   
-    $("button").click(function() {
+    $(".boutonChoix").click(function() {
         boutonClasse = $( this ).attr("class");
         if(boutonClasse != "boutonChoix choisi" && boutonClasse != "boutonChoix indisponible") {
             var ok = confirm("Voulez-vous valider ce choix ?");
@@ -25,7 +26,7 @@ $(function() {
                 $.ajax({
                     url: urlSelectionRoles,
                     type: "POST",
-                    data: "role=" + $( this ).text() + "&partieId=" + $( "#partieId" ).text()
+                    data: "role=" + $( this ).attr( "id" ) + "&partieId=" + $( "#partieId" ).text()
                 });
             }  
         }              

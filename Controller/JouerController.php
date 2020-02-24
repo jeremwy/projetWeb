@@ -133,6 +133,7 @@ class JouerController extends Controller
         {
             $dReponse["title"] = htmlspecialchars($idPartie);
             $dReponse["js"][0] = "selectionBouton.js";
+            $dReponse["js"][1] = "chat.js";
             return new View("Jouer/loby.php", $dReponse);
         }
         else
@@ -145,37 +146,25 @@ class JouerController extends Controller
 
     public static function selectRole()
     {
-        //si l'utilisateur n'est pas dans une autre partie ou est dans la partie
-        if(!(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"])) || (isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] == $_POST["partieId"]))
+        if(!parent::isConnected())
+        {     
+            //on retourne une vue qui contient 0 (en cas d'échec) ou 1 (en cas de succès) pour respecter le MVC.      
+            return new AjaxView("0", "text");
+        }
+        //si l'utilisateur est dans la partie
+        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] == $_POST["partieId"])
         {
             //si un rôle a été envoyé
             if(isset($_POST["role"]) && !empty($_POST["role"]))
             {
-                $role = $_POST["role"];
+                $roles = array("maitre", "chefPompier", "chefPolicier", "chefMedecin"); //tableau qui contient tous les rôles.
+                $roleChoisi = $_POST["role"];
 
-                switch($_POST["role"])
-                {
-                    case "Maître du jeu":
-                        $role = "maitre";
-                        break;
-                    case "Pompier":
-                        $role = "chefPompier";
-                        break;
-                    case "Policier":
-                        $role = "chefPolicier";
-                        break;
-                    case "Médecin":
-                        $role = "chefMedecin";
-                        break;
-                    default:
-                        $role = NULL;
-                }
-
-                if($role != NULL)
+                //on vérifie si le rôle choisi est bien dans le tableau des rôles.
+                if(in_array($roleChoisi, $roles))
                 {
                     $manager = new PartieManager();
                     $result = $manager->addRole($role, $_SESSION["user"]->getId(), $_POST["partieId"]);
-                    echo $result;
                     if($result)
                     {
                         $_SESSION["partie"]["id"] = $_POST["partieId"];
