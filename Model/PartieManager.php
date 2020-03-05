@@ -86,7 +86,7 @@ class PartieManager extends Manager
         
         $stmt = $this->db->prepare("UPDATE partie
                                     SET " . $role . "=:user
-                                    WHERE id=:partieId AND " . $role . " is null");
+                                    WHERE id=:partieId AND " . $role . " IS NULL");     //"IS NULL" va permetrre de tester directement si le rôle est libre
         $stmt->bindValue(":user", $user);
         $stmt->bindValue(":partieId", $partieId);
         $stmt->execute();

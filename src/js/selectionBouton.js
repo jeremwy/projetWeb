@@ -6,10 +6,10 @@ function getRoles() {
         $.ajax( {
             url: urlGetRoles,
             success: function(result) {
-                console.log(result);
                 for (let [role, valeur] of Object.entries(result)) {
                     $( "#"+role ).attr("class", "boutonChoix "+valeur);
                 }
+                console.log(result);
             }
         });
     }, 500);

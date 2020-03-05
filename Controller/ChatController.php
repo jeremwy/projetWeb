@@ -10,7 +10,8 @@ class  ChatController extends Controller{
         // si on a envoyé des données avec le formulaire et si l'utilisateur est dans une partie
         if(isset($_POST['message']) && !empty($_POST["message"]) && isset($_SESSION["partie"]) && !empty($_SESSION["partie"])){
             //on prend l'ID et le message de l'utilisateur
-            $message = new Message($_POST["message"], $_SESSION["user"]->getId(), $_SESSION["partie"]["id"]);
+            $user = parent::getUser();
+            $message = new Message($_POST["message"], $user->getId(), $_SESSION["partie"]["id"]);
             $manager = new ChatManager($message);
             $result = $manager->envoiMessage();
             //il faudra gérer les cas où il y a une erreur  

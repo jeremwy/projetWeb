@@ -12,21 +12,22 @@ class JouerController extends Controller
 
     public static function index()
     {
+        //force la connnexion
+        $view = parent::needToConnect();
+        if($view != NULL) return $view;
+
         $dReponse["title"] = "Jouer";
-        if(!parent::isConnected())
-        {     
-            return new View("User/login.php", $dReponse);            
-        }
-        else
-        {
-            $manager = new PartieManager();
-            $dReponse["parties"] = $manager->getParties();
-            return new View("Jouer/choisirPartie.php", $dReponse);
-        }        
+        $manager = new PartieManager();
+        $dReponse["parties"] = $manager->getParties();
+        return new View("Jouer/choisirPartie.php", $dReponse);     
     }
 
     public static function creer()
     {
+        //force la connnexion
+        $view = parent::needToConnect();
+        if($view != NULL) return $view;
+
         if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
         {
             $dReponse["title"] = "Impossible de créer une partie";
@@ -34,10 +35,6 @@ class JouerController extends Controller
             return new View("Message.php", $dReponse);
         }
         $dReponse["title"] = "Créer une partie";
-        if(!parent::isConnected())
-        {            
-            return new View("User/login.php", $dReponse);
-        }
         //si aucun formualire n'a été envoyé
         if(!isset($_POST) || empty($_POST))
         {
@@ -65,7 +62,10 @@ class JouerController extends Controller
                 $partieData["nomPartie"] = $nom;
                 $partieData["maitre"] = null;
                 if($_POST["maitre"] === "oui")
-                    $partieData["maitre"] = $_SESSION["user"]->getId();
+                {
+                    $user = parent::getUser();
+                    $partieData["maitre"] = $user->getId();
+                }                    
             }
             
             //si une erreur est survenue
@@ -114,11 +114,10 @@ class JouerController extends Controller
 
     public static function loby()
     {
-        if(!parent::isConnected())
-        {            
-            $dReponse["title"] = "Connexion";
-            return new View("User/login.php", $dReponse);  
-        }
+        //force la connnexion
+        $view = parent::needToConnect();
+        if($view != NULL) return $view;
+
         $idPartie = $_GET["id"];
         if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] != $idPartie)
         {
@@ -151,35 +150,44 @@ class JouerController extends Controller
             //on retourne une vue qui contient 0 (en cas d'échec) ou 1 (en cas de succès) pour respecter le MVC.      
             return new AjaxView("0", "text");
         }
-        //si l'utilisateur est dans la partie
-        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] == $_POST["partieId"])
+        //si l'utilisateur est déjà dans une partie dont l'identifiant ne correspond à celui envoyé alors on retoune 0
+        if(isset($_SESSION["partie"]["id"]) && $_SESSION["partie"]["id"] != $_POST["partieId"])
         {
-            //si un rôle a été envoyé
-            if(isset($_POST["role"]) && !empty($_POST["role"]))
+            return new AjaxView("0", "text");
+        }
+        //si un rôle a été envoyé
+        if(isset($_POST["role"]) && !empty($_POST["role"]))
+        {
+            $roles = array("maitre", "chefPompier", "chefPolicier", "chefMedecin"); //tableau qui contient tous les rôles.
+            $roleChoisi = $_POST["role"];
+            //on vérifie si le rôle choisi est bien dans le tableau des rôles.
+            if(in_array($roleChoisi, $roles))
             {
-                $roles = array("maitre", "chefPompier", "chefPolicier", "chefMedecin"); //tableau qui contient tous les rôles.
-                $roleChoisi = $_POST["role"];
-
-                //on vérifie si le rôle choisi est bien dans le tableau des rôles.
-                if(in_array($roleChoisi, $roles))
+                $manager = new PartieManager();
+                $user = parent::getUser();
+                //le test pour savoir si le rôle est libre est faire de manière automatique par le manager dans la requête SQL
+                $result = $manager->addRole($roleChoisi, $user->getId(), $_POST["partieId"]);
+                if($result) //si le rôle n'est pas libre, on retourne 0 (de toute façon l'utilisateur n'est pas censé pouvoir cliquer sur un bouton d'un rôle déjà séléctionné (voir JS))
                 {
-                    $manager = new PartieManager();
-                    $result = $manager->addRole($role, $_SESSION["user"]->getId(), $_POST["partieId"]);
-                    if($result)
+                    $_SESSION["partie"]["id"] = $_POST["partieId"];
+                    if(!isset($_SESSION["partie"]["roles"]))
                     {
-                        $_SESSION["partie"]["id"] = $_POST["partieId"];
-                        $_SESSION["partie"][$role] = $_SESSION["user"]->getId();
-                        return new AjaxView("1", "text");
+                        $_SESSION["partie"]["roles"] = array();
                     }
-                }            
-            }
+                    array_push($_SESSION["partie"]["roles"], $roleChoisi);
+                    return new AjaxView("1", "text");
+                }
+            }            
         }
         return new AjaxView("0", "text");
     }
 
     public static function partie()
     {
-        //pour l'instant, on ne vérifie pas si la partie existe ni si l'utilisateur en fait partie. Il faudra faire cette vérification
+        //force la connnexion
+        $view = parent::needToConnect();
+        if($view != NULL) return $view;
+
         $dReponse["title"] = "Jouer";
         $dReponse["js"][0] = "chat.js";
         return new View("Jouer/plateauPartie.php", $dReponse);
@@ -192,13 +200,14 @@ class JouerController extends Controller
         {
             $manager = new PartieManager();
             $roles = $manager->getRoles($_SESSION["partie"]["id"]);
-            foreach($roles as $role => $user)
+            foreach($roles as $role => $userID)
             {
                 //si l'utilisateur qui a le rôle l'utilisateur qui est connecté alors on met "choisi"
-                if($user == $_SESSION["user"]->getId())
+                $user = parent::getUser();
+                if($userID == $user->getId())
                     $roles[$role] = "choisi";
                 //s'il s'agit d'un autre utilisateur non nul on met "indisponible"
-                else if($user != NULL)
+                else if($userID != NULL)
                     $roles[$role] = "indisponible";
                 //si l'utilisateur est nul on met "libre"
                 else
