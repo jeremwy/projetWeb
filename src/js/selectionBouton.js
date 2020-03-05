@@ -32,6 +32,7 @@ function isPartieLancee() {
                     }
                     $( "#"+role ).attr("class", "boutonChoix "+valeur);
                 }
+                console.log(result);
             }
         });
     }, 500);
