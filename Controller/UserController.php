@@ -142,7 +142,11 @@ class UserController extends Controller
                     $_SESSION["partie"]["id"] = $partieId["id"];
                 }
 
+<<<<<<< HEAD
                 $dReponse["title"] = "Connexion réussie";
+=======
+                $dReponse["title"] = "Connexion réussi";
+>>>>>>> 5374c17ca241c72e06f846efc99cc7bdcff53bc2
                 $dReponse["message"] = "Connexion réussie. Vous allez être redirigé(e)s.";
                 $route = unserialize($_SESSION["redirectRoute"])->getRoute();
                 return new RedirectView("Message.php", SITE_ROOT . $route, 5, $dReponse);
