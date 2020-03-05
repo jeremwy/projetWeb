@@ -3,6 +3,7 @@
 require_once("Model/UserManager.php");
 require_once("Model/PartieManager.php");
 require_once("Model/Class/User.php");
+require_once("Vendor/Route.php");
 class UserController extends Controller
 {
     public static function signup()
@@ -133,7 +134,7 @@ class UserController extends Controller
             if($result == 1)
             {
                 $partieManager = new PartieManager();
-                $partieId = $partieManager->getUserPartieId($_SESSION["user"]->getId());
+                $partieId = $partieManager->getUserPartieId(unserialize($_SESSION["user"])->getId());
                 
                 if($partieId != false)
                 {
@@ -141,9 +142,10 @@ class UserController extends Controller
                     $_SESSION["partie"]["id"] = $partieId["id"];
                 }
 
-                $dReponse["title"] = "Connexion réussi";
-                $dReponse["message"] = "Connexion réussi. Vous allez être redirigé(e)s.";
-                return new RedirectView("Message.php", SITE_ROOT . "jouer", 5, $dReponse);
+                $dReponse["title"] = "Connexion réussie";
+                $dReponse["message"] = "Connexion réussie. Vous allez être redirigé(e)s.";
+                $route = unserialize($_SESSION["redirectRoute"])->getRoute();
+                return new RedirectView("Message.php", SITE_ROOT . $route, 5, $dReponse);
             }
             else if($result == -1)
             {
@@ -169,10 +171,11 @@ class UserController extends Controller
             if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
             {
                 $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
+                $userID = parent::getUser()->getId();
                 //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
-                if($_SESSION["user"]->getId() == $maitrePartieJoueur)
+                if($userID == $maitrePartieJoueur)
                 {
-                    $partieManager->supprimerPartie($_SESSION["user"]->getId());
+                    $partieManager->supprimerPartie($userID);
                 }
             }
             if(session_destroy())

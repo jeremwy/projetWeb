@@ -105,6 +105,7 @@ nav{
   width: 40%;
   padding: 15px;
   color: black;
+  cursor: pointer;
 }
 
 .jouerLink
@@ -286,4 +287,13 @@ nav{
   position: absolute;
   top: 30%;
   right: 10px;
+}
+
+#lancerPartie{
+  margin: 20px 0px;
+}
+
+#lancerPartieBouton{
+  display: block;
+  margin: auto;
 }

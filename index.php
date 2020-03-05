@@ -52,7 +52,12 @@
             $method = "index";
             break;
     }
-
+    /*
+        Permet de concerver la route. Ceci est utile en cas de redirection. Par exemple après un login, on redirige l'utilisateur vers la route qu'il souhaitait atteindre
+        grâce à cet objet. (Voir ci-dessous pour plus de détails sur le contrôleur et la méthode)
+        On concerve en session cet objet que si la route mène quelque part.
+    */
+    $route = new Route($controller, $method);
     /*
         La variable $controller contient le nom de la classe du controller qui est de la forme xxxController où xxx est passé (ou non dans l'url).
         On vérifie si le fichier contenant la classe du controller existe et si sa méthode (dont le nom est dans $method) existent. 
@@ -70,6 +75,15 @@
         require_once($controllerFile);
         if(method_exists($controller, $method))
         {
+            //on concerve la route en session pour qu'elle soit accessible par les autres scripts
+            //on ne garde pas les route de login et de logout car on ne veut pas être redirigé vers elles
+            if($route->getRoute() != "User/login" && $route->getRoute() != "User/logout")
+            {
+                //on sauvegarde dans le tableau de session sous la clef "redirectRoute" car on accèdera à cette route uniquement si on redirige.
+                //Ainsi, la route vers laquelle sera redirigé l'utilisateur sera la route (page) qu'il a visité juste avant
+                $_SESSION["redirectRoute"] = serialize($route);
+            }
+                
             //Appelle une méthode statique et passe les arguments en tableau: cette fonction permet d'appeler une méthode d'une autre classe en donnant, dans un tableau, le nom de la classe et de la méthode. Le deuxième argument est un tableau contenant les paramètres à passer à la méthode.
             $view = forward_static_call_array(array($controller, $method), array());            
         }

@@ -86,7 +86,7 @@ class PartieManager extends Manager
         
         $stmt = $this->db->prepare("UPDATE partie
                                     SET " . $role . "=:user
-                                    WHERE id=:partieId AND " . $role . " is null");
+                                    WHERE id=:partieId AND " . $role . " IS NULL");     //"IS NULL" va permetrre de tester directement si le rôle est libre
         $stmt->bindValue(":user", $user);
         $stmt->bindValue(":partieId", $partieId);
         $stmt->execute();
@@ -101,6 +101,29 @@ class PartieManager extends Manager
         $stmt->bindValue(":partieId", $partieId);
         $stmt->execute();
         return $stmt->fetch( PDO::FETCH_ASSOC );
+    }
+
+    public function isPartieLancee()
+    {
+        $stmt = $this->db->prepare("SELECT enCours
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $_SESSION["partie"]["id"]);
+        $stmt->execute();
+        /*
+            On retourne la première case du tableau. Cette case contient la valeur de 'enCours' (de la table partie). L'attribut 'enCours prend soit la valeur 0 soit la valeur 1 ainsi,
+            on peut retourner sa valeur sans vérification.
+        */
+        return $stmt->fetch()[0];
+    }
+
+    public function lancerPartie()
+    {
+        $stmt = $this->db->prepare("UPDATE partie
+                                    SET enCours=1
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $_SESSION["partie"]["id"]);
+        return $stmt->execute();
     }
 }
 ?>
