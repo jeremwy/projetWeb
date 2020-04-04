@@ -1,7 +1,6 @@
 <?php
 require_once("Model/PartieManager.php");
 require_once("Model/Class/Partie.php");
-require_once("View/AjaxView.php");
 class JouerController extends Controller
 {
 

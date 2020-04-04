@@ -1,0 +1,106 @@
+/* Utilisé pour décrire le thème noir du site (uniquement des couleurs et des bordures, tout le reste est géré dans main.css) */
+
+
+body{
+  background: #383838;
+}
+
+h1, p, a{
+  color: white;
+}
+
+#header-container{
+  background: black;
+  color: white;
+}
+
+.navItem > a
+{
+  color: white;
+}
+
+#switch-theme-button{
+  background: black;
+  border: white solid 2px;
+  color: white;
+}
+.form, #chat{
+  color: white;
+  background: #707070;
+  border: 5px solid #B0B0B0;
+}
+
+.inputTexte{
+  border: solid 3px #B0B0B0;
+}
+
+.submitButton{
+  background: #33cc33;
+  border: 2px solid green;
+  color: black;
+}
+
+.jouerLink
+{
+  color: black;
+  background: #33cc33;
+  border: 2px solid green;
+}
+
+.error{
+  color: #900505;
+}
+
+#tabParties{
+  color: white;
+}
+
+#tabParties, #tabParties > thead > tr > td, .partieItem, .partieItem > td{
+  border: solid black 2px;
+}
+
+.boutonChoix{
+  border: white solid 7px;
+}
+
+.choisi{
+  color: #35D0E8;
+  border: #35D0E8 solid 7px;
+}
+
+.indisponible{
+  color: red;
+  border: red solid 7px;
+}
+
+#messages{
+  border: solid black 1px;
+  background: #b3b1b1;
+}
+
+#saisieMessage{
+  border: solid black 1px;
+}
+
+.userFrom{
+  color: black;
+}
+
+#plateau{
+  border: solid red 1px;
+}
+
+#carte{
+  border: solid 1px blue;
+}
+
+#notifications{
+  color: orange;  
+  color: #DF4301;
+  border: #DF4301 solid 2px;
+  background: #F9A47F;
+}
+
+#toggleChatBouton{
+  border: solid black 1px;
+}

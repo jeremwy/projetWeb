@@ -1,0 +1,272 @@
+/* Feuille CSS principale sans aucune couleur. Les couleurs sont précisées dans theme_noir.css ou theme_blanc.css */
+
+html, body{
+    padding: 0px;
+    margin: 0px;
+}
+  
+html{
+    position: relative;
+}
+  
+h1{
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+  
+p, a, label, td
+  {
+    font-family: 'Roboto', sans-serif;
+}
+  
+  ul {
+    list-style-type: none;
+    padding: 0px;
+}
+  
+#header-container{
+    display: flex;
+    padding: 10px 10px;  
+}
+  
+  nav{  
+    width: 80%;
+    padding: 10px;
+}
+  
+#navList{
+    list-style-type: none;
+    margin: 0px;
+}
+  
+.navItem
+  {
+    display: inline-block;
+    margin: 0px 10px;
+}
+  
+.navItem::after
+  {
+    clear: both;
+}
+  
+.navItem > a
+  {
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+}
+  
+#switch-theme-container{
+    height: 100%;
+    width: 20%;
+    display: inline-block;    
+}
+  
+#switch-theme-button{
+    margin: auto;
+    display: block;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+}
+  
+#main{
+    width: 70vw;
+    margin: auto;
+    padding: 0px;
+}
+  
+.paraCenter{
+    text-align: center;
+}
+  
+.form, #chat{
+    padding-top: 5%;
+    padding-bottom: 5%;
+    width: 40%;
+    margin: auto;
+    margin-top: 10%;
+    border-radius: 60px;
+}
+  
+#labelConnexion{
+    font-size: 175%;
+    font-weight: bold;
+}
+  
+  
+.formField
+  {
+    text-align: center;
+    margin-top: 3.5%;
+}
+  
+.submitButton{
+    font-family: 'Bowlby One SC', cursive;
+    border-radius: 20px;
+    width: 40%;
+    padding: 15px;
+    cursor: pointer;
+}
+  
+.jouerLink
+  {
+    font-family: 'Bowlby One SC', cursive;
+    border-radius: 20px;
+    width: 25%;
+    padding: 15px;
+    text-decoration: none;
+}
+  
+.inputTexte{
+    border-radius: 9px;
+    height: 20px;
+    width: 75%;
+    padding: 8px 5px;
+}  
+  
+#tabParties{
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 20px;
+}
+ 
+  
+.partieInfo{
+    padding: 25px 15px;
+}
+  
+#creer-partie-lien{
+    display: block;
+    margin: 20px 0px;
+}
+  
+.roles{
+    width: 100%;
+    margin: auto;
+    display: grid;
+    grid-gap: 10px;
+    /* 2 colonnes : */
+    grid-template-columns: 1fr 1fr;
+}
+  
+.boutonChoix{
+    padding: 10px;
+    min-height: 150px;
+    border-radius: 10px;  
+    text-align: center;
+    background: none;  
+    font-size: 25px;
+    opacity: 0.5;
+}
+  
+.boutonChoix:hover{
+    cursor: pointer;
+    opacity: 1;
+}
+  
+.boutonChoix > img{
+    display: block;
+    margin: auto;
+    width: 100px;
+    height: auto;
+}
+  
+.choisi, .indisponible{
+    opacity: 1;
+}
+  
+  
+#chat{
+    width: 230px;
+    padding: 30px 10px;
+    margin: 0px;
+}
+  
+#messages{
+    width: 90%;
+    height: 120px;
+    margin: auto;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: left;
+    font-size: 15px;
+    table-layout: fixed;
+}
+  
+#messages > tbody{
+    display: block;
+    overflow: auto;
+    height: 120px;
+    max-height: 120px;
+}
+  
+#messages > tr{
+    display: inline-block;
+    width: 100%;
+    max-height: 20px;
+}
+  
+#saisieMessage{
+    display: block;
+    width: 85%;
+    margin: auto;
+    margin-bottom: 10px;
+}
+  
+.userFrom{
+    font-style: italic;
+}
+  
+#plateau{
+    position: relative;
+    width: 100%;
+    height: 75vh;
+}
+  
+#carte{
+    width: 100%;
+    height: 70vh;
+}
+  
+#toggleButtonContainer{
+    position: relative;
+    width: 70px;
+    height: 35px;
+    margin: auto;
+    margin-bottom: 10px;
+}
+  
+#notifications{
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 20px;
+    margin: 0px;
+    border-radius: 100%;
+}
+  
+#toggleChatBouton{
+    width: 100%;
+    height: 100%;  
+    font-family: 'Roboto', sans-serif;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 20px;
+}
+  
+#asideChat{
+    position: absolute;
+    top: 30%;
+    right: 10px;
+}
+  
+#lancerPartie{
+    margin: 20px 0px;
+}
+  
+#lancerPartieBouton{
+    display: block;
+    margin: auto;
+}

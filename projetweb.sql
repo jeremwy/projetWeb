@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 19 fév. 2020 à 16:18
+-- Généré le :  sam. 04 avr. 2020 à 22:14
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -35,14 +35,7 @@ CREATE TABLE IF NOT EXISTS `chat` (
   `partie` varchar(255) COLLATE utf8_bin NOT NULL,
   `message` varchar(500) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Déchargement des données de la table `chat`
---
-
-INSERT INTO `chat` (`id`, `user_id`, `partie`, `message`) VALUES
-(1, 'aTOPdVMrpA7dvMBWzfwb4wmXN', 'test', 'htfhfth');
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -60,13 +53,6 @@ CREATE TABLE IF NOT EXISTS `partie` (
   `enCours` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Déchargement des données de la table `partie`
---
-
-INSERT INTO `partie` (`id`, `maitre`, `chefPompier`, `chefPolicier`, `chefMedecin`, `enCours`) VALUES
-('test', 'aTOPdVMrpA7dvMBWzfwb4wmXN', '', '', '', 0);
 
 -- --------------------------------------------------------
 

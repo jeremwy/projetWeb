@@ -15,7 +15,4 @@
     }
     ?>
 </table>
-
-<div id="creerPartieDiv">
-    <a class="whiteLink" href="<?php echo SITE_ROOT . "jouer/creer" ?>">Créer une partie</a>
-</div>
+<a id="creer-partie-lien" href="<?php echo SITE_ROOT . "jouer/creer" ?>">Créer une partie</a>

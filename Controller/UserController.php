@@ -4,6 +4,8 @@ require_once("Model/UserManager.php");
 require_once("Model/PartieManager.php");
 require_once("Model/Class/User.php");
 require_once("Vendor/Route.php");
+require_once("View/AjaxView.php");
+
 class UserController extends Controller
 {
     public static function signup()
@@ -195,6 +197,29 @@ class UserController extends Controller
         {
             $dReponse["title"] = "Page introuvable";
             return new View("Error/404.html", $dReponse);
+        }
+    }
+
+    public static function setTheme()
+    {
+        //si l'on est dans ce cas, c'est que l'utilisateur tente d'accèder directement à la page.
+        if(!isset($_POST["theme"]) || empty($_POST["theme"]))
+        {
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
+        }
+        //dans ce cas, c'est que l'on reçoit une requête ajax
+        else
+        {
+            $theme = $_POST["theme"];
+            if($theme == "noir" || $theme == "blanc")
+            {
+                $_SESSION["theme"] = $theme;
+                //thème changé, aucune erreur
+                return new AjaxView("1", "text");
+            }
+            //valeur non correcte
+            return new AjaxView("0", "text");
         }
     }
 }

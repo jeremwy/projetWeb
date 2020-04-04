@@ -21,7 +21,11 @@ class View implements iView
 
     public function init()
     {
-        $this->dReponse["style"][0] = "http://localhost/PROJETWEB/src/css/style.css";
+        if(!isset($_SESSION["theme"]) || ($_SESSION["theme"] != "noir" && $_SESSION["theme"] != "blanc"))
+            $this->dReponse["style"][0] = SITE_ROOT . "src/css/theme_noir.css";
+        else
+            $this->dReponse["style"][0] = SITE_ROOT . "src/css/theme_" . $_SESSION["theme"] . ".css";
+        $this->dReponse["style"][1] = SITE_ROOT . "src/css/main.css";
         $this->dReponse["font"][0] ="https://fonts.googleapis.com/css?family=Bowlby+One+SC|Poppins|Roboto:300&display=swap";
     }
 
