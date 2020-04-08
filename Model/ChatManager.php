@@ -48,5 +48,13 @@ class ChatManager extends Manager{
         $message = $stmt->fetch();
         return $message;
     }
+
+    public function clearMessage($partieId)
+    {
+        $stmt = $this->db->prepare('DELETE FROM chat
+                                    WHERE partie=:partieId');
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+    }
 }
 ?>

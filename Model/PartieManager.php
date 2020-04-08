@@ -1,6 +1,8 @@
 <?php
 require_once("Manager.php");
+require_once("ChatManager.php");
 require_once("Class/Partie.php");
+
 class PartieManager extends Manager
 {
     private $partie;
@@ -79,6 +81,10 @@ class PartieManager extends Manager
                                     WHERE maitre=:maitreId");
         $stmt->bindValue(":maitreId", $maitreId);        
         $stmt->execute();
+
+        //suppression du chat de la partie
+        $chatManager = new ChatManager();
+        $chatManager->clearMessage($_SESSION["partie"]["id"]);
     }
 
     public function addRole($role, $user, $partieId)
