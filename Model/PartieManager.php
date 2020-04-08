@@ -13,6 +13,18 @@ class PartieManager extends Manager
         $this->partie = $partie;
     }
 
+    public function getPartie($partieId)
+    {
+        $stmt = $this->db->prepare("SELECT *
+                                    FROM partie
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Partie');
+        $partie = $stmt->fetch();
+        return $partie;
+    }
+
     //retourne les parties qui ne sont pas encore lancées et qui penvent rejointes
     public function getParties()
     {
@@ -51,16 +63,17 @@ class PartieManager extends Manager
         return $stmt->execute();
     }
 
-    //retourne l'id de la partie dans lequel est l'utilisateur. Retourn false sinon.
-    public function getUserPartieId($userId)
+    //retourne l'id de la partie dans lequel est l'utilisateur. Retourne false sinon.
+    public function getUserPartie($userId)
     {
         $n = 4;
-        $stmt = $this->db->prepare("SELECT id
+        $stmt = $this->db->prepare("SELECT *
                                     FROM partie
                                     WHERE maitre=:userId1 OR chefPompier=:userId2 OR chefPolicier=:userId3 OR chefMedecin=:userId4"); //après il faut rajouter "OR :userId=pompier OR :userId=police ...".
-        for($i = 1; $i <= 4; $i++)
+        for($i = 1; $i <= $n; $i++)
             $stmt->bindValue(":userId" . $i, $userId);
         $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Partie');
         return $stmt->fetch();
     }
     
@@ -84,7 +97,7 @@ class PartieManager extends Manager
 
         //suppression du chat de la partie
         $chatManager = new ChatManager();
-        $chatManager->clearMessage($_SESSION["partie"]["id"]);
+        $chatManager->clearMessage($_SESSION["partie"]->getId());
     }
 
     public function addRole($role, $user, $partieId)
@@ -99,36 +112,12 @@ class PartieManager extends Manager
         return $count = $stmt->rowCount();
     }
 
-    public function getRoles($partieId)
-    {
-        $stmt = $this->db->prepare("SELECT maitre, chefPompier, chefPolicier, chefMedecin
-                                    FROM partie
-                                    WHERE id=:partieId");
-        $stmt->bindValue(":partieId", $partieId);
-        $stmt->execute();
-        return $stmt->fetch( PDO::FETCH_ASSOC );
-    }
-
-    public function isPartieLancee()
-    {
-        $stmt = $this->db->prepare("SELECT enCours
-                                    FROM partie
-                                    WHERE id=:partieId");
-        $stmt->bindValue(":partieId", $_SESSION["partie"]["id"]);
-        $stmt->execute();
-        /*
-            On retourne la première case du tableau. Cette case contient la valeur de 'enCours' (de la table partie). L'attribut 'enCours prend soit la valeur 0 soit la valeur 1 ainsi,
-            on peut retourner sa valeur sans vérification.
-        */
-        return $stmt->fetch()[0];
-    }
-
     public function lancerPartie()
     {
         $stmt = $this->db->prepare("UPDATE partie
                                     SET enCours=1
                                     WHERE id=:partieId");
-        $stmt->bindValue(":partieId", $_SESSION["partie"]["id"]);
+        $stmt->bindValue(":partieId", $_SESSION["partie"]->getId());
         return $stmt->execute();
     }
 }

@@ -39,5 +39,45 @@ class AjaxView implements iView
         header($header);
         echo $this->contenu;
     }
+
+    /**
+     * Get the value of contenu
+     */ 
+    public function getContenu()
+    {
+        return $this->contenu;
+    }
+
+    /**
+     * Set the value of contenu
+     *
+     * @return  self
+     */ 
+    public function setContenu($contenu)
+    {
+        $this->contenu = $contenu;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of type
+     */ 
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Set the value of type
+     *
+     * @return  self
+     */ 
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
 }
 ?>

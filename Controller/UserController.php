@@ -136,18 +136,25 @@ class UserController extends Controller
             if($result == 1)
             {
                 $partieManager = new PartieManager();
-                $partieId = $partieManager->getUserPartieId(unserialize($_SESSION["user"])->getId());
+                $partie = $partieManager->getUserPartie($_SESSION["user"]->getId());
                 
-                if($partieId != false)
+                if($partie != false)
                 {
                     //attention : $partieId est un tableau qui contient une case [0] et une case  ["id"] (les deux cases ont le même contenu).
-                    $_SESSION["partie"]["id"] = $partieId["id"];
+                    $_SESSION["partie"] = $partie;
                 }
                 $dReponse["title"] = "Connexion réussie";
 
                 $dReponse["message"] = "Connexion réussie. Vous allez être redirigé(e)s.";
-                $route = unserialize($_SESSION["redirectRoute"])->getRoute();
-                return new RedirectView("Message.php", SITE_ROOT . $route, 5, $dReponse);
+                if(isset($_SESSION["redirectRoute"]))
+                {                    
+                    $route = $_SESSION["redirectRoute"]->getRoute();
+                    return new RedirectView("Message.php", SITE_ROOT . $route, 5, $dReponse);
+                }
+                else
+                {                    
+                    return new RedirectView("Message.php", SITE_ROOT, 5, $dReponse);
+                }
             }
             else if($result == -1)
             {
@@ -170,15 +177,16 @@ class UserController extends Controller
         //il faut absolument appeler cette méthode avant de tenter de supprimer la session car après, l'id de la partie stocké en session sera inaccessible
         if(isset($_SESSION["user"]) && !empty($_SESSION["user"]))
         {    
-            if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+            if(parent::isInPartie())
             {
-                $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]["id"]);
+                $maitrePartieJoueur = $partieManager->getMaitre($_SESSION["partie"]->getId());
                 $userID = parent::getUser()->getId();
                 //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
                 if($userID == $maitrePartieJoueur)
                 {
                     $partieManager->supprimerPartie($userID);
                 }
+                unset($_SESSION["partie"]);
             }
             if(session_destroy())
             {

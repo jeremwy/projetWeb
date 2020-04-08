@@ -245,6 +245,8 @@ p, a, label, td
     width: 20px;
     margin: 0px;
     border-radius: 100%;
+    text-align: center;
+    padding: 2px;
 }
   
 #toggleChatBouton{

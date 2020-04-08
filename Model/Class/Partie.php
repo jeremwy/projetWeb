@@ -32,32 +32,22 @@ class Partie
     {
         
         $this->chefPompier = $chefPompier;
-        //? Est ce qu'on le fait comme ça ?
-        $chefPompier->role = 1;
-        //?
     }
 
     public function setChefMedecin($chefMedecin)
     {
         $this->chefMedecin = $chefMedecin;
-        //? Est ce qu'on le fait comme ça ?
-        $chefMedecin->role = 2;
-        //?
     }
 
     public function setChefPolicier($chefPolicier)
     {
         $this->chefPolicier = $chefPolicier;
-        //? Est ce qu'on le fait comme ça ?
-        $chefPolicier->role = 3;
-        //?
     }
 
     public function setEnCours($enCours)
     {
         $this->enCours = $enCours;
     }
-
 
     public function getId()
     {
@@ -86,9 +76,8 @@ class Partie
 
     public function isEnCours()
     {
-        return $this->isEnCours == 1;
+        return $this->enCours;
     }
-
 
     public function getNbJoueur()
     {
@@ -112,8 +101,18 @@ class Partie
         {
             $nbJoueur++;
         }
-
         return $nbJoueur;
+    }
+
+    public function getRoles()
+    {
+        $roles = [
+            "maitre" => $this->maitre,
+            "chefMedecin" => $this->chefMedecin,
+            "chefPolicier" => $this->chefPolicier,
+            "chefPompier" => $this->chefPompier
+        ];
+        return $roles;
     }
 }
 ?>

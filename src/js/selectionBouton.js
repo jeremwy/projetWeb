@@ -8,7 +8,7 @@ var urlLancerPartie = urlSite +  "partie/lancerPartie";
 //permet de savoir si le joueur est maître du jeu ou non
 var estMaitre = 0;
 
-function getRoles() {
+function isPartieLancee() {
     setInterval(function() {
         $.ajax( {
             url: urlIsPartieLancee,
@@ -20,10 +20,12 @@ function getRoles() {
     }, 500);
 }
 
-function isPartieLancee() {
-    setInterval(function() {        
+function getRoles() {
+    setInterval(function() {
         $.ajax( {
             url: urlGetRoles,
+            type: "POST",
+            data: "partieId=" + $( "#partieId" ).text(),
             success: function(result) {
                 for (let [role, valeur] of Object.entries(result)) {
                     if(role == "maitre" && valeur == "choisi" && estMaitre == 0) {
@@ -32,7 +34,6 @@ function isPartieLancee() {
                     }
                     $( "#"+role ).attr("class", "boutonChoix "+valeur);
                 }
-                console.log(result);
             }
         });
     }, 500);
@@ -44,6 +45,7 @@ function lancerPartie() {
         $.ajax( {
             url: urlLancerPartie,
             success: function(result) {
+                console.log(result);
                 if(result == "0") {
                     alert("Une erreur est survenue, impossible de lancer la partie.");
                 }
@@ -64,7 +66,10 @@ $(function() {
                 $.ajax({
                     url: urlSelectionRoles,
                     type: "POST",
-                    data: "role=" + $( this ).attr( "id" ) + "&partieId=" + $( "#partieId" ).text()
+                    data: "role=" + $( this ).attr( "id" ) + "&partieId=" + $( "#partieId" ).text(),
+                    success: function(result) {
+                        console.log(result);
+                    }
                 });
             }  
         }              

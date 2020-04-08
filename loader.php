@@ -6,4 +6,5 @@ require_once("Controller/Controller.php");
 require_once("View/View.php");
 require_once("View/RedirectView.php");
 require_once("Model/Class/User.php");
+require_once("Model/Class/Partie.php");
 ?>

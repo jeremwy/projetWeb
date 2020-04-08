@@ -49,7 +49,7 @@ class UserManager extends Manager
             if(password_verify($this->user->getMotDePasse(), $userTmp->getMotDePasse()) == true)
             {
                 //on sauvegarde l'utilisateur en session
-                $_SESSION["user"] = serialize($userTmp);
+                $_SESSION["user"] = $userTmp;
                 return 1;
             }
             else

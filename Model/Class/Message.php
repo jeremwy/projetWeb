@@ -6,7 +6,7 @@ class Message
     public $user_id;
     public $partie;
 
-    //ces deux attributs ne sont renseignés que lorsque l'on envoi un objet message au client
+    //ces deux attributs ne sont renseignés que lorsque que l'on envoi un objet message au client
     public $nom;
     public $prenom;
 

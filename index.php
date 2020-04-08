@@ -1,7 +1,6 @@
 <?php
     require_once("loader.php");
-    session_start();    
-
+    session_start();
     $request = rtrim($_SERVER["REQUEST_URI"], "/"); //supprime le caractère final "/" qui peut poser problème pour l'analyse de la requète
     $path = explode("/", $request);
 
@@ -81,7 +80,7 @@
             {
                 //on sauvegarde dans le tableau de session sous la clef "redirectRoute" car on accèdera à cette route uniquement si on redirige.
                 //Ainsi, la route vers laquelle sera redirigé l'utilisateur sera la route (page) qu'il a visité juste avant
-                $_SESSION["redirectRoute"] = serialize($route);
+                $_SESSION["redirectRoute"] = $route;
             }
                 
             //Appelle une méthode statique et passe les arguments en tableau: cette fonction permet d'appeler une méthode d'une autre classe en donnant, dans un tableau, le nom de la classe et de la méthode. Le deuxième argument est un tableau contenant les paramètres à passer à la méthode.

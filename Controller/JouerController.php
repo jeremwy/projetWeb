@@ -28,7 +28,8 @@ class JouerController extends Controller
         $view = parent::needToConnect();
         if($view != NULL) return $view;
 
-        if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+        parent::cleanPartie();
+        if(isset($_SESSION["partie"]) && !empty($_SESSION["partie"]))
         {
             $dReponse["title"] = "Impossible de créer une partie";
             $dReponse["message"] = "Vous ne pouvez pas créer de partie car vous en avez déjà rejoint une.";
@@ -94,12 +95,14 @@ class JouerController extends Controller
             {
                 if($_POST["maitre"] === "oui")
                 {
-                    $_SESSION["partie"]["id"] = $partie->getId();
-                    $_SESSION["partie"]["role"][0] = "maitre";
+                    $user = parent::getUser();
+                    $partie->setMaitre($user->getId());
+                    $manager->addRole("maitre", $user->getId(), $partie->getId());
+                    $_SESSION["partie"] = $partie;
                 }                    
                 $n = 5;
                 $dReponse["title"] = "Partie créée";
-                $dReponse["message"] = "Partie créée. Vous allez être redirigé(e) vers la pas de la partie dans " . $n . " secondes.";
+                $dReponse["message"] = "Partie créée. Vous allez être redirigé(e) vers la page de la partie dans " . $n . " secondes.";
                 return new RedirectView("Message.php", SITE_ROOT . "partie/loby?id=" . $partie->getId() , $n, $dReponse);
             }
             else

@@ -11,9 +11,9 @@
                 {
                     echo '<li class="navItem"><a href="' . SITE_ROOT . 'jouer">Jouer</a></li>';
                     echo '<li class="navItem"><a href="' . SITE_ROOT . 'user/logout">Déconnexion</a></li>';
-                    if(isset($_SESSION["partie"]["id"]) && !empty($_SESSION["partie"]["id"]))
+                    if(isset($_SESSION["partie"]) && $_SESSION["partie"]->getId() != null)
                     {
-                        echo '<li class="navItem"><a href="' . SITE_ROOT . 'partie/loby?id=' . $_SESSION["partie"]["id"] .'">Ma partie</a></li>';
+                        echo '<li class="navItem"><a href="' . SITE_ROOT . 'partie/loby?id=' . $_SESSION["partie"]->getId() .'">Ma partie</a></li>';
                     }
                 }
             ?>
