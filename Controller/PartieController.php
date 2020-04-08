@@ -30,6 +30,8 @@ class PartieController extends Controller
         {
             $dReponse["title"] = htmlspecialchars($partie->getId());
             $dReponse["js"][0] = "chat.js";
+            if($partie->getMaitre() == parent::getUser()->getId())
+                $dReponse["js"][1] = "maitreJeu.js";
             return new View("Partie/plateauPartie.php", $dReponse);
         }
         else

@@ -5,7 +5,7 @@ require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
 
 /*
-    Classe qui gère les évènements liés à une partie (ajout de personnages ..)
+    Classe qui gère les évènements liés à une partie (ajout de personnages, horloge ...)
 */
 class PartieEventController extends Controller
 {
@@ -14,7 +14,7 @@ class PartieEventController extends Controller
         et elle s'occupe d'appeler les traitements à effectuer sur la partie (déplacements ...).
         Elle renvoie 1 en cas de succès et 0 sinon.
     */
-    public function horloge()
+    public static function horloge()
     {
         if(parent::isConnected() && parent::isInPartie())
         {
