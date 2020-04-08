@@ -3,6 +3,7 @@ require_once("Controller.php");
 require_once("Model/PartieManager.php");
 require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
+require_once("vendor/XMLPartieHistorique.php");
 
 /*
     Classe qui gère les évènements liés à une partie (ajout de personnages, horloge ...)
@@ -26,5 +27,12 @@ class PartieEventController extends Controller
             $dReponse["title"] = "Page introuvable";
             return new View("Error/404.html", $dReponse);
         }
+    }
+
+    //à supprimer ...
+    public static function test()
+    {
+        $xml_partie = new XMLPartieHistorique($_SESSION["partie"]);
+        die();
     }
 }

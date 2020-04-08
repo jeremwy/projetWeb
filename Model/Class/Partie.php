@@ -114,5 +114,15 @@ class Partie
         ];
         return $roles;
     }
+
+    /*
+        Permet d'appeler la fonction "get_object_vars" depuis l'extérieur de la classe.
+        Ainsi, on pourra savoir quels sont les attributs de la classe (noms et valeurs) sans se soucier du "scope".
+        (Utilisée pour la classe XML Partie)
+    */
+    public function getVars()
+    {
+        return get_object_vars($this);
+    }
 }
 ?>
