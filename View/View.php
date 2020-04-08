@@ -33,6 +33,7 @@ class View implements iView
     {
         $dReponse = $this->dReponse;
         include_once("View/Includes/template.php");
+        var_dump($_SESSION);
     }
 }
 ?>

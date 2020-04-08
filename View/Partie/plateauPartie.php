@@ -1,4 +1,4 @@
-<h1><?php echo $dReponse["title"]; ?></h1>
+<h1 id="partieId"><?php echo $dReponse["title"]; ?></h1>
 
 <div id="plateau">
     <div id="carte"></div>

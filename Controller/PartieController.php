@@ -28,7 +28,7 @@ class PartieController extends Controller
         $partie = $manager->getPartie($_SESSION["partie"]->getId());
         if($partie && $partie->isEnCours())
         {
-            $dReponse["title"] = "Jouer";
+            $dReponse["title"] = htmlspecialchars($partie->getId());
             $dReponse["js"][0] = "chat.js";
             return new View("Partie/plateauPartie.php", $dReponse);
         }

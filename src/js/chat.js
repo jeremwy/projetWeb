@@ -11,6 +11,7 @@ $( document ).ready(function(){
 
     charger();  //appel de la fonction qui permet de récupérer les derniers messages
 
+    //ajout d'un couteur d'événement sur le bouton d'envoi
     $("#envoi").click(function() {
         var message = $('#saisieMessage').val();
         if(message != ""){ // on vérifie que le message ne soit pas vide
