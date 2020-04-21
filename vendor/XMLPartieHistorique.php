@@ -18,29 +18,41 @@ class XMLPartieHistorique
         $this->save();
     }
 
+    /*
+        Permet d'ouvir le fichier XML dont le chemin est $fichier_xml_path.
+        Si aucun fichier n'est trouvé alors un nouveau et créé.
+    */
     private function load()
     {
-        $fichierXML = fopen($this->fichier_xml_path, "r");
-        if(filesize($this->fichier_xml_path) > 0)
-            $this->fichier_xml = simplexml_load_file($this->fichier_xml_path);
+        $fichier = fopen($this->fichier_xml_path, "r"); //ouverture du fichier en lecture seul (on l'écrase par la suite). La tête de lecture est placée au début du fichier
+        if(filesize($this->fichier_xml_path) > 0)   //si le fihcier n'est pas vide alors il faut charger le xml
+            $this->fichier_xml = simplexml_load_file($this->fichier_xml_path);  //on charge dans la varible fichier_xml le contenu du fichier
         else
-            $this->creerFichierXml();
-        fclose($fichierXML);
+            $this->creerFichierXml();   //si le fichier est vide alors on doit écrire certaines lignes de base (voir méthode creerFichierXml())
+        fclose($fichier);   //on ferme le fichier ouvert (libération mémoire)
     }
 
+    /*
+        Permet d'écrire dans la fichier les lignes de base de tous les documents XML permettant de tracer l'historique d'un partie.
+        Ces lignes de base sont les suivantes:
+            -ajout d'un élément englobant : historique
+            -ajout d'un élément enfant à l'élément historique: partie
+            -ajout de tous les attributs de l'objet "partie" (pour lequel on souhaite créer un fichier historique) ainsi que de leur valeur à cette élément partie.
+    */
     private function creerFichierXml()
     {
-        $historiqueXML = new SimpleXMLElement("<historique></historique>");
-        $partieXML = $historiqueXML->addChild("partie");
+        $historiqueXML = new SimpleXMLElement("<historique></historique>"); //création de l'élément historique
+        $partieXML = $historiqueXML->addChild("partie");    //ajout de l'élément enfant partie
 
-        $attributs = $this->partie->getVars();
+        $attributs = $this->partie->getVars();  //getVars() permet de récupérer tous les attributs ainsi que leur valeur de l'objet partie
 
-        foreach($attributs as $nom => $valeur)
+        foreach($attributs as $nom => $valeur)  //pour chaque attribut sauf l'attribut "enCours" (on s'en fiche car on se doute que la partie était en cours au moment où elle était jouée)
         {
-            $partieXML->addChild($nom, $valeur);
+            if($nom != "enCours")
+                $partieXML->addChild($nom, $valeur); //on l'ajoute avec sa valeur à l'élément parte
         }
 
-        $this->fichier_xml = $historiqueXML;
+        $this->fichier_xml = $historiqueXML;    //le contenu du fichier XML est sauvegarder dans la variable fichier_XML
     }
 
     private function save()
@@ -53,10 +65,9 @@ class XMLPartieHistorique
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
         $dom->loadXML($this->fichier_xml->asXML());
-        //on écrase le fichier
-        $fichierXML = fopen($this->fichier_xml_path, "w");
-        fwrite($fichierXML, $dom->saveXML());
-        fclose($fichierXML);
+        $fichierXML = fopen($this->fichier_xml_path, "w");  //on ouvre le fichier en écriture. La tête d'écriture est positionnée au début du fichier (il est écrasé).
+        fwrite($fichierXML, $dom->saveXML());   //on écrit le contenu XML dans le fichier
+        fclose($fichierXML);    //on le ferme
     }
 }
 ?>

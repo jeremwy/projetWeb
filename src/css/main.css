@@ -8,7 +8,11 @@ html, body{
 html{
     position: relative;
 }
-  
+
+.hidden{
+    display: none;
+}
+
 h1{
     font-family: 'Poppins', sans-serif;
     text-align: center;

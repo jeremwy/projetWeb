@@ -1,0 +1,2 @@
+<h1>Le maître du jeu s'est déconnecté</h1>
+<p>Le maître du jeu s'est déconnecté et la partie a été supprimée. Nous vous invitons à vous rendre sur la page <a href="<?php echo SITE_ROOT . "jouer" ?>">Jouer</a> afin de créer ou de trouver une nouvelle partie.</p>

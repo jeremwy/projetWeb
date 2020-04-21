@@ -25,6 +25,12 @@ class PartieManager extends Manager
         return $partie;
     }
 
+    public function getPartieNom($partieId)
+    {
+        $partie = $this->getPartie($partieId);
+        return $partie->getNom();
+    }
+
     //retourne les parties qui ne sont pas encore lancées et qui penvent rejointes
     public function getParties()
     {
@@ -56,8 +62,10 @@ class PartieManager extends Manager
 
     public function savePartie()
     {
-        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :maitre, NULL, NULL, NULL, 0)");
+        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :nom, :date, :maitre, NULL, NULL, NULL, 0)");
         $stmt->bindValue(":id", $this->partie->getId());
+        $stmt->bindValue(":nom", $this->partie->getNom());
+        $stmt->bindValue(":date", $this->partie->getDateString());
         $stmt->bindValue(":maitre", $this->partie->getMaitre());
         
         return $stmt->execute();

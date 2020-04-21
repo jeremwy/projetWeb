@@ -76,19 +76,12 @@ class JouerController extends Controller
                 $dReponse["js"][0] = "creerPartieCheck.js";
                 return new View("Jouer/creerPartie.php", $dReponse);
             }
-            
-            //on vérifie si le nom de partie n'est pas déjà pris
+
+            //sinon on sauvegarde la partie  
+            $nom = $partieData["nomPartie"];
+            $id =  $nom . "-" . uniqid();
+            $partie = new Partie($id, $nom, $partieData["maitre"]);
             $manager = new PartieManager();
-
-            if($manager->isIdUsed($partieData["nomPartie"]))
-            {
-                $dReponse["js"][0] = "creerPartieCheck.js";
-                $dReponse["form"]["message"][0] = "Le nom de partie est déjà utilisé.";
-                return new View("Jouer/creerPartie.php", $dReponse); 
-            }
-
-            //sinon on sauvegarde la partie            
-            $partie = new Partie($partieData["nomPartie"], $partieData["maitre"]);
             $manager->setPartie($partie);
             $result = $manager->savePartie();
             if($result == 1)

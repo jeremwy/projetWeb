@@ -1,4 +1,4 @@
-<h1 id="partieId"><?php echo $dReponse["title"]; ?></h1>
+<h1 id="partieNom"><?php echo $dReponse["title"]; ?></h1>
 <p>Choisir un rôle :</p>
 <div class="roles">
     <div class="boutonChoix" id="maitre">
@@ -27,3 +27,5 @@
 <aside id="asideChat">
     <?php include("View/Chat/chat.php"); ?>
 </aside>
+
+<p id="partieId" class="hidden"><?php echo $dReponse["partieId"]; ?></p>

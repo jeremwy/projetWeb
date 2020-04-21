@@ -1,16 +1,25 @@
 <?php
 class Partie
 {
+    /*
+        Deux parties peuvent avoir le même nom mais pas le même identifiant.
+        Un identifiant est de la forme: nom-clef_unique. La clef unique est générée au moement de la sauvegarde dans la base de données avec
+        la fonction php unidid().
+    */
     private $id;
+    private $nom;
+    private $date;
     private $maitre;
     private $chefPompier;
     private $chefPolicier;
     private $chefMedecin;
     private $enCours;
 
-    public function __construct($id = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $enCours = 0)
+    public function __construct($id = null, $nom = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $enCours = 0)
     {
         $this->id = $id;
+        $this->nom = $nom;
+        $this->date = new DateTime();
         $this->maitre = $maitre;
         $this->chefPompier = $chefPompier;
         $this->chefPolicier = $chefPolicier;
@@ -21,6 +30,16 @@ class Partie
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    public function setNom($nom)
+    {
+        $this->nom = $nom;
+    }
+
+    public function setDate($date)
+    {
+        $this->date = $date;
     }
 
     public function setMaitre($maitre)
@@ -52,6 +71,24 @@ class Partie
     public function getId()
     {
         return $this->id;
+    }
+
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+    /*
+        Retourne la date sous la forme d'une chaîne de caractères.
+    */
+    public function getDateString()
+    {
+        return $this->date->format('Y-m-d H:i:s');
     }
 
     public function getMaitre()

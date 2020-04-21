@@ -2,6 +2,7 @@
 require_once("Model/PartieManager.php");
 require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
+require_once("Vendor/XMLPartieHistorique.php");
 
 /*
 Cette classe est utilisée pour gérer les traitements relatifs à une partie (selection de rôles, lancer la partie ...).
@@ -41,27 +42,27 @@ class PartieController extends Controller
             return new View("Message.php", $dReponse);
         }       
     }
-
+    
     public static function loby()
     {
+        /*
+            Il se peut que l'utilisateur tente d'accéder à une partie qui n'existe plus (Ex: le maitre a quitté et la partie est supprimée).
+            Il faut alors vider la session de l'utilisateur si la partie dans laquelle il est n'existe plus.
+        */
         parent::cleanPartie();
         //force la connnexion
         $view = parent::needToConnect();
         if($view != NULL) return $view;
-
+        
         if(!isset($_GET["id"]) || empty($_GET["id"]))
         {
-            /*
-                Il se peut que l'utilisateur tente d'accéder à une partie qui n'existe plus (Ex: le maitre à quitter et la partie est supprimée).
-                Il faut alors vider la session de l'utilisateur si la partie dans laquelle il est n'existe plus.
-            */
             $dReponse["title"] = "Page introuvable";
             return new View("Error/404.html", $dReponse);
         }
 
-        //on vérifie si l'utilisateur n'est pas déjà dans une partie
-        $idPartie = $_GET["id"];
-        if(parent::isInPartie() && $_SESSION["partie"]->getId() != $idPartie)
+        //on vérifie si l'utilisateur n'est pas déjà dans une autre partie
+        $partieId = $_GET["id"];
+        if(parent::isInPartie() && $_SESSION["partie"]->getId() != $partieId)
         {
             $dReponse["title"] = "Impossible de rejoindre cette partie";
             $dReponse["message"] = "Impossible de rejoindre cette partie car vous êtes déjà dans une autre partie.";
@@ -71,9 +72,11 @@ class PartieController extends Controller
         {
             $manager = new PartieManager();
             //si l'identifiantest bien utilisé alors on laisse aller sur la page sinon, message d'erreur
-            if($manager->isIdUsed($idPartie))
+            if($manager->isIdUsed($partieId))
             {
-                $dReponse["title"] = htmlspecialchars($idPartie);
+                $nom = $manager->getPartieNom($partieId);
+                $dReponse["title"] = htmlspecialchars($nom);
+                $dReponse["partieId"] = htmlspecialchars($partieId);
                 $dReponse["js"][0] = "selectionBouton.js";
                 $dReponse["js"][1] = "chat.js";
                 return new View("Partie/loby.php", $dReponse);
@@ -89,7 +92,7 @@ class PartieController extends Controller
 
     public static function selectRole()
     {
-        //si l'utilisateur ,'est pas connecté ou qu'aucun identifiant de partie n'est envoyé
+        //si l'utilisateur n'est pas connecté ou qu'aucun identifiant de partie n'est envoyé
         if(!parent::isConnected() || !isset($_POST["partieId"]) || empty($_POST["partieId"]))
         {
             $dReponse["title"] = "Page introuvable";
@@ -106,7 +109,7 @@ class PartieController extends Controller
         {
             $roles = array("maitre", "chefPompier", "chefPolicier", "chefMedecin"); //tableau qui contient tous les rôles.
             $roleChoisi = $_POST["role"];
-            //on vérifie si le rôle choisi est bien dans le tableau des rôles.
+            //on vérifie si le rôle choisi est bien dans le tableau des rôles, sinon on retourne 0.
             if(in_array($roleChoisi, $roles))
             {
                 $manager = new PartieManager();
@@ -114,20 +117,20 @@ class PartieController extends Controller
 
                 /*
                     On met à jour la base de données (ajout du joueur au rôle spécifique de la partie).
-                    Le test pour savoir si l rôle est libre est fait de manière automatique dans la recherche SQL.
+                    Le test pour savoir si le rôle est libre est fait de manière automatique dans la recherche SQL.
                     Si "$result" vaut faux c'est que l'utilisateur ne peut pas avoir le rôle car il est déjà pris
                 */
                 $result = $manager->addRole($roleChoisi, $user->getId(), $_POST["partieId"]);
                 
                 /*
                     Si le rôle n'est pas libre ("$result" == false), on retournera 0.
-                    L'utilisateur n'est pas censé pouvoir cliquer sur un bouton d'un rôle déjà séléctionné (voir JS)
-                    Si le rôle a peu être ajouté, on sauvegarde la partie dans la session de l'utilisateur.
+                    L'utilisateur n'est pas censé pouvoir cliquer sur un bouton d'un rôle déjà séléctionné (voir JS) !
+                    Si le rôle a pu être ajouté, on sauvegarde la partie dans la session de l'utilisateur.
                 */
                 if($result)
                 {
                     /*
-                        Après la mise à jour de la base de données avec l'ajout du rôle, il faut mettre à jou la session de l'utilisateur.
+                        Après la mise à jour de la base de données avec l'ajout du rôle, il faut mettre à jour la session de l'utilisateur.
                         Pour cela, on récupère la partie depuis la base de données et on la sauvegarde dans la session de l'utilisateur.
                     */
                     $partie = $manager->getPartie($_POST["partieId"]);
@@ -150,7 +153,7 @@ class PartieController extends Controller
             $manager = new PartieManager();
             $partie = $manager->getPartie($partieId);
             if($partie)
-            {        
+            {
                 foreach($partie->getRoles() as $role => $userID)
                 {
                     //si l'utilisateur qui a le rôle l'utilisateur qui est connecté alors on met "choisi"
@@ -168,13 +171,13 @@ class PartieController extends Controller
                 return new AjaxView(json_encode($roles), "json");
             }
         }
-        return new AjaxView("12", "text");
+        return new AjaxView("0", "text");
     }
 
     //permet de renvoyer une réponse Ajax aux clients pour savoir si le maître du jeu a lancé la partie
     public static function isPartieLancee()
     {
-        if(!parent::isConnected())
+        if(!parent::isConnected() || !parent::isInPartie())
         {
             $dReponse["title"] = "Page introuvable";
             return new View("Error/404.html", $dReponse);
@@ -182,6 +185,45 @@ class PartieController extends Controller
         $manager = new PartieManager();
         $partie = $manager->getPartie($_SESSION["partie"]->getId());
         return new AjaxView($partie->isEnCours(), "text");
+    }
+
+    public static function isPartieExiste()
+    {
+        /*
+            Il est possible que le maître du jeu se déconnecte, ce qui entraîne la suppression de la partie.
+            Il faut donc indiquer aux utilisateurs si la partie existe encore.
+        */
+        if(!parent::isInPartie())
+        {
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
+        }
+        //on essaie de récupérer la partie
+        $manager = new PartieManager();
+        $partie = $manager->getPartie($_SESSION["partie"]->getId());
+        //si la partie existe alors on retoune une vue ajax avec 1, sinon on retourne un vue ajax avec 0.
+        if($partie)
+            return new AjaxView("1", "text");
+        return new AjaxView("0", "text");
+    }
+
+    public static function partieSupprimee()
+    {
+        /*
+            Si l'utilisateur est dans une partie et qu'il arrive ici (redirection JS), c'est que le maître du jeu a supprimé la partie (il s'est déconnecté).
+            Dans ce cas, on affiche le message "Le maître du jeu ..." (voir fichier Error/PartieSupprimee.html) et on appelle cleanPartie() de la classe Controller.
+
+            Par contre si le joueur est dans aucune partie c'est qu'il ne doit pas être ici donc on affiche la page Error/404.html
+        */
+        if(!parent::isInPartie())
+        {
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
+        }
+        //on supprime la partie de la session de l'utilisateur:
+        parent::cleanPartie();
+        $dReponse["title"] = "Partie introuvable";
+        return new View("Error/PartieSupprimee.php", $dReponse);
     }
 
     public static function lancerPartie()
@@ -199,6 +241,7 @@ class PartieController extends Controller
             $result = $manager->lancerPartie();
             if($result)
             {
+                $XMLPartieHistorique = new XMLPartieHistorique($_SESSION["partie"]);    //on crée un nouvel historique XML pour la partie
                 $_SESSION["partie"]->setEnCours(true);
                 return new AjaxView("1", "text");
             }
