@@ -62,11 +62,42 @@ class PartieManager extends Manager
 
     public function savePartie()
     {
-        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :nom, :date, :maitre, NULL, NULL, NULL, 0)");
+        $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :nom, :date, :maitre, :chefPompier, :chefPolicier, :chefMedecin, :horloge, :enCours)");
         $stmt->bindValue(":id", $this->partie->getId());
         $stmt->bindValue(":nom", $this->partie->getNom());
-        $stmt->bindValue(":date", $this->partie->getDateString());
+        $stmt->bindValue(":date", $this->partie->getDate());
         $stmt->bindValue(":maitre", $this->partie->getMaitre());
+        $stmt->bindValue(":chefPompier", $this->partie->getChefPompier());
+        $stmt->bindValue(":chefPolicier", $this->partie->getChefPolicier());
+        $stmt->bindValue(":chefMedecin", $this->partie->getChefMedecin());
+        $stmt->bindValue(":horloge", $this->partie->getHorloge());
+        $stmt->bindValue(":enCours", $this->partie->isEnCours());
+        
+        return $stmt->execute();
+    }
+
+    public function updatePartie($id)
+    {
+        $stmt = $this->db->prepare("UPDATE partie 
+                                    SET 
+                                        nom = :nom,
+                                        date = :date,
+                                        maitre = :maitre,
+                                        chefPompier = :chefPompier,
+                                        chefPolicier = :chefPolicier,
+                                        chefMedecin = :chefMedecin,
+                                        horloge = :horloge,
+                                        enCours = :enCours
+                                    WHERE id = :id");
+        $stmt->bindValue(":id", $this->partie->getId());
+        $stmt->bindValue(":nom", $this->partie->getNom());
+        $stmt->bindValue(":date", $this->partie->getDate());
+        $stmt->bindValue(":maitre", $this->partie->getMaitre());
+        $stmt->bindValue(":chefPompier", $this->partie->getChefPompier());
+        $stmt->bindValue(":chefPolicier", $this->partie->getChefPolicier());
+        $stmt->bindValue(":chefMedecin", $this->partie->getChefMedecin());
+        $stmt->bindValue(":horloge", $this->partie->getHorloge());
+        $stmt->bindValue(":enCours", $this->partie->isEnCours());
         
         return $stmt->execute();
     }
@@ -127,6 +158,27 @@ class PartieManager extends Manager
                                     WHERE id=:partieId");
         $stmt->bindValue(":partieId", $_SESSION["partie"]->getId());
         return $stmt->execute();
+    }
+
+    /*
+        Permet d'ajouter n seconde(s) à l'horloge d'une partie dans la base de donnée
+    */
+    public function ajoutHorloge($n)
+    {
+        $partieId = $_SESSION["partie"]->getId();
+        $this->partie = $this->getPartie($partieId);
+        $this->partie->ajoutHorloge($n);
+        $this->updatePartie($partieId);
+    }
+
+    public function getHorloge()
+    {
+        $partieId = $_SESSION["partie"]->getId();
+
+        $stmt = $this->db->prepare("SELECT horloge FROM partie where id = :id");
+        $stmt->bindValue(":id", $partieId);
+        $stmt->execute();
+        return $stmt->fetch()[0];
     }
 }
 ?>

@@ -13,9 +13,10 @@ class Partie
     private $chefPompier;
     private $chefPolicier;
     private $chefMedecin;
+    private $horloge;
     private $enCours;
 
-    public function __construct($id = null, $nom = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $enCours = 0)
+    public function __construct($id = null, $nom = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $horloge = 0, $enCours = 0)
     {
         $this->id = $id;
         $this->nom = $nom;
@@ -24,6 +25,7 @@ class Partie
         $this->chefPompier = $chefPompier;
         $this->chefPolicier = $chefPolicier;
         $this->chefMedecin = $chefMedecin;
+        $this->horloge = $horloge;
         $this->enCours = $enCours;
     }
 
@@ -63,6 +65,19 @@ class Partie
         $this->chefPolicier = $chefPolicier;
     }
 
+    public function setHorloge($horloge)
+    {
+        $this->horloge = $horloge;
+    }
+
+    /*
+        Permet d'ajouter n seconde(s) à l'horloge
+    */
+    public function ajoutHorloge($n)
+    {
+        $this->horloge = $this->horloge + $n;
+    }
+
     public function setEnCours($enCours)
     {
         $this->enCours = $enCours;
@@ -83,14 +98,6 @@ class Partie
         return $this->date;
     }
 
-    /*
-        Retourne la date sous la forme d'une chaîne de caractères.
-    */
-    public function getDateString()
-    {
-        return $this->date->format('Y-m-d H:i:s');
-    }
-
     public function getMaitre()
     {
         return $this->maitre;
@@ -109,6 +116,11 @@ class Partie
     public function getChefMedecin()
     {
         return $this->chefMedecin;
+    }
+
+    public function getHorloge()
+    {
+        return $this->horloge;
     }
 
     public function isEnCours()

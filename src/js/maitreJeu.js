@@ -10,7 +10,6 @@ var horlogeintervalleFunction;
 
 function horloge() {
     horlogeintervalleFunction =  setInterval( function(){
-                                    console.log(tempsAppel);
                                     $.ajax({
                                         url: urlHorloge,
                                         type: "POST"

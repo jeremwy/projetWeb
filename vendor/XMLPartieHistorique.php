@@ -13,7 +13,7 @@ class XMLPartieHistorique
     public function __construct($partie)
     {
         $this->partie = $partie;
-        $this->fichier_xml_path = "src/xml/" . $partie->getId() . "_historique.xml";
+        $this->fichier_xml_path = FOLDER_ROOT . SEPARATOR . "src" . SEPARATOR . "xml" . SEPARATOR . $partie->getId() . "_historique.xml";
         $this->load();
         $this->save();
     }
@@ -24,12 +24,18 @@ class XMLPartieHistorique
     */
     private function load()
     {
-        $fichier = fopen($this->fichier_xml_path, "r"); //ouverture du fichier en lecture seul (on l'écrase par la suite). La tête de lecture est placée au début du fichier
-        if(filesize($this->fichier_xml_path) > 0)   //si le fihcier n'est pas vide alors il faut charger le xml
-            $this->fichier_xml = simplexml_load_file($this->fichier_xml_path);  //on charge dans la varible fichier_xml le contenu du fichier
-        else
-            $this->creerFichierXml();   //si le fichier est vide alors on doit écrire certaines lignes de base (voir méthode creerFichierXml())
-        fclose($fichier);   //on ferme le fichier ouvert (libération mémoire)
+        try
+        {
+            $fichier = fopen($this->fichier_xml_path, "r"); //ouverture du fichier en lecture seul (on l'écrase par la suite). La tête de lecture est placée au début du fichier
+            if(filesize($this->fichier_xml_path) > 0)   //si le fihcier n'est pas vide alors il faut charger le xml
+                $this->fichier_xml = simplexml_load_file($this->fichier_xml_path);  //on charge dans la varible fichier_xml le contenu du fichier
+            else
+                $this->creerFichierXml();   //si le fichier est vide alors on doit écrire certaines lignes de base (voir méthode creerFichierXml())
+            fclose($fichier);   //on ferme le fichier ouvert (libération mémoire)
+        } catch(Exception $e)
+        {
+            echo "Une erreur est survenue : " . $e->getMessage();
+        }
     }
 
     /*
@@ -53,6 +59,13 @@ class XMLPartieHistorique
         }
 
         $this->fichier_xml = $historiqueXML;    //le contenu du fichier XML est sauvegarder dans la variable fichier_XML
+    }
+
+    public function ajoutEvenement($evenement, $description, $temps)
+    {
+        $evenementXML = $this->fichier_xml->addChild($evenement, $description);  //on ajoute un nouvel élément "evenement" et sa valeur est "description" à l'historique
+        $evenementXML->addAttribute("temps", $temps);   //on ajoute un attribut à cette événement qui est le temps t (en secondes) auquel il s'st produit
+        $this->save();  //on sauvegarde
     }
 
     private function save()

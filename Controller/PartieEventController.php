@@ -19,6 +19,9 @@ class PartieEventController extends Controller
     {
         if(parent::isConnected() && parent::isInPartie())
         {
+            //on ajoute 1 seconde à l'horloge de la partie dans la base de données.
+            $manager = new PartieManager();
+            $manager->ajoutHorloge(1);
             $view = new AjaxView("1", "text");
             return $view;
         }
@@ -29,10 +32,38 @@ class PartieEventController extends Controller
         }
     }
 
-    //à supprimer ...
+    /*
+        Ajout un événenement "$evenement" (décrit par "$description") se produisant à l'instant "$temps" au fichier historique de la partie.
+    */
+    private static function ajoutEvenement($evenement, $description, $temps)
+    {
+        /*
+            L'horloge est mise à jour de manière périodique par le maître du jeu (requête AJAX).
+            Ainsi, l'horloge change dans la base de données mais pas dans la session des clients (car ils ne récupère pas la nouvelle valeur de l'horloge une fois que'elle est mise à jour).
+            Il faut donc récupérer la valeur de l'horloge avant d'ajouter un événement à l'historique.
+        */
+        if(parent::isConnected() && parent::isInPartie())
+        {
+            $manager = new PartieManager();
+            $horloge = $manager->getHorloge();
+            $xml_partie = new XMLPartieHistorique($_SESSION["partie"]);
+            $xml_partie->ajoutEvenement($evenement, $description, $horloge);
+        }
+        else
+        {
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
+        }
+    }
+
+
+
+    //fonctions de test (à supprimer):
+    
     public static function test()
     {
         $xml_partie = new XMLPartieHistorique($_SESSION["partie"]);
+        self::ajoutEvenement("ajout", "Ajout d'un véhicule de police aux coordonnées X, Y, Z.", 654);
         die();
     }
 }
