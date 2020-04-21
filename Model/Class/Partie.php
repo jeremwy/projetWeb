@@ -98,6 +98,11 @@ class Partie
         return $this->date;
     }
 
+    public function getDateString()
+    {
+        return $this->date->format("Y-m-d H:i:s");
+    }
+
     public function getMaitre()
     {
         return $this->maitre;

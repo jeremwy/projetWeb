@@ -13,6 +13,7 @@ class Manager
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ));
+        $this->db->query("SET NAMES UTF8"); //permet d'indiquer à PDO d'utiiser l'encodage UTF-8
     }
 }
 ?>

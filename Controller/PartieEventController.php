@@ -1,6 +1,7 @@
 <?php
 require_once("Controller.php");
 require_once("Model/PartieManager.php");
+require_once("Model/VictimeManager.php");
 require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
 require_once("vendor/XMLPartieHistorique.php");
@@ -17,13 +18,26 @@ class PartieEventController extends Controller
     */
     public static function horloge()
     {
-        if(parent::isConnected() && parent::isInPartie())
+        if(parent::isConnected() && parent::isInPartie() && isset($_POST["vitesse"]) && !empty($_POST["vitesse"]))
         {
-            //on ajoute 1 seconde à l'horloge de la partie dans la base de données.
+            $vitesse = intval($_POST["vitesse"]);   //la valeur peut être 1, 2 ou 4 (correspond à l'accélération du temps fixée par le maître du jeu)
+            if($vitesse !== 1 && $vitesse !== 2 && $vitesse !== 4)
+                return new AjaxView("0", "text");
+
+            //on ajoute $vitesse seconde(s) à l'horloge de la partie dans la base de données.
             $manager = new PartieManager();
-            $manager->ajoutHorloge(1);
-            $view = new AjaxView("1", "text");
-            return $view;
+            $manager->ajoutHorloge($vitesse);
+            var_dump($manager->getHorloge());
+            $victimeManager = new VictimeManager();
+            $victimes = $victimeManager->getVictimes($_SESSION["partie"]->getId());
+            foreach($victimes as $victime)
+            {
+                var_dump($victime->getVie());
+                if($victime->getVie() > 0)
+                    $victime->setVie($victime->getVie() - 1.2 * $victime->getEtat() * $vitesse);   //modifier le ration si besoin
+            }
+            $victimeManager->updateVictimesVie($victimes);
+            return new AjaxView("1", "text");
         }
         else
         {

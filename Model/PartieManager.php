@@ -59,13 +59,27 @@ class PartieManager extends Manager
         $result = $stmt->fetch();
         return !($result == false);
     }
+    /*
+        Indique si la partie est lancée
+    */
+    public function isPartieEnCours($id)
+    {
+        $stmt = $this->db->prepare("SELECT *
+                                    FROM partie
+                                    WHERE id=:id");
+        $stmt->bindValue(":id", $id);
+        $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'Partie');
+        $partie = $stmt->fetch();
+        return $partie->isEnCours() == true;
+    }
 
     public function savePartie()
     {
         $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :nom, :date, :maitre, :chefPompier, :chefPolicier, :chefMedecin, :horloge, :enCours)");
         $stmt->bindValue(":id", $this->partie->getId());
         $stmt->bindValue(":nom", $this->partie->getNom());
-        $stmt->bindValue(":date", $this->partie->getDate());
+        $stmt->bindValue(":date", $this->partie->getDateString());
         $stmt->bindValue(":maitre", $this->partie->getMaitre());
         $stmt->bindValue(":chefPompier", $this->partie->getChefPompier());
         $stmt->bindValue(":chefPolicier", $this->partie->getChefPolicier());
@@ -127,16 +141,16 @@ class PartieManager extends Manager
         return $stmt->fetch()[0];
     }
 
-    public function supprimerPartie($maitreId)
+    public function supprimerPartie($partieId)
     {
         $stmt = $this->db->prepare("DELETE FROM partie
-                                    WHERE maitre=:maitreId");
-        $stmt->bindValue(":maitreId", $maitreId);        
+                                    WHERE id=:partieId");
+        $stmt->bindValue(":partieId", $partieId);        
         $stmt->execute();
 
         //suppression du chat de la partie
         $chatManager = new ChatManager();
-        $chatManager->clearMessage($_SESSION["partie"]->getId());
+        $chatManager->clearMessage($partieId);
     }
 
     public function addRole($role, $user, $partieId)

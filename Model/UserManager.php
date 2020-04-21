@@ -28,14 +28,14 @@ class UserManager extends Manager
         }
         //afin d'insérer un timestamp UNIX dans une base de donées mysql, il faut utiliser le fonction FROM_UNIXTIME qui permet de dire "la valeur est un timestamp unix" à la base de données
         $stmt = $this->db->prepare("INSERT INTO Utilisateur VALUES (:nom, :prenom, :id, :motPasse, FROM_UNIXTIME(:dateInscription))");
-        $stmt->bindValue(":nom", $this->user->getNom(), PDO::PARAM_STR);
-        $stmt->bindValue(":prenom", $this->user->getPrenom(), PDO::PARAM_STR);
+        $stmt->bindValue(":nom", $this->user->getNom());
+        $stmt->bindValue(":prenom", $this->user->getPrenom());
+        $stmt->bindValue(":id", $this->user->getId());
         /*
             On hash le mot de passe afin qu'il ne soit pas stocké en clair dans la base de données.
             Pour vérifier le mot de passe, il faudra utiliser "password_verify".
         */
-        $stmt->bindValue(":id", $this->user->getId(), PDO::PARAM_STR);
-        $stmt->bindValue(":motPasse", password_hash($this->user->getMotDePasse(), PASSWORD_DEFAULT), PDO::PARAM_STR);
+        $stmt->bindValue(":motPasse", password_hash($this->user->getMotDePasse(), PASSWORD_DEFAULT));
         $stmt->bindValue(":dateInscription", $this->user->getInscription());
 
         return $stmt->execute();

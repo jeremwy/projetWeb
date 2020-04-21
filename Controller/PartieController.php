@@ -1,5 +1,7 @@
 <?php
 require_once("Model/PartieManager.php");
+require_once("Model/VictimeManager.php");
+require_once("Model/Class/Victime.php");
 require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
 require_once("Vendor/XMLPartieHistorique.php");
@@ -29,10 +31,13 @@ class PartieController extends Controller
         $partie = $manager->getPartie($_SESSION["partie"]->getId());
         if($partie && $partie->isEnCours())
         {
-            $dReponse["title"] = htmlspecialchars($partie->getId());
+            $dReponse["title"] = htmlspecialchars($partie->getNom());
             $dReponse["js"][0] = "chat.js";
             if($partie->getMaitre() == parent::getUser()->getId())
+            {
                 $dReponse["js"][1] = "maitreJeu.js";
+                $dReponse["maitre"] = 1;    //permet à la vue de savoir si le joueur est le maître du jeu (affichage différent).
+            }
             return new View("Partie/plateauPartie.php", $dReponse);
         }
         else
@@ -235,14 +240,22 @@ class PartieController extends Controller
         }
 
         $user = parent::getUser();
-        if(parent::isInPartie() && $_SESSION["partie"]->getMaitre() == $user->getId())
+        $manager = new PartieManager();
+        $partie = $_SESSION["partie"];
+
+        //il faut vérifier si l'utilisateur est dans une partie, s'il est le maître de cette partie et si la partie n'est pas déjà lancée
+        if(parent::isInPartie() && $partie->getMaitre() == $user->getId() && !$manager->isPartieEnCours($partie->getId()))
         {
-            $manager = new PartieManager();
             $result = $manager->lancerPartie();
             if($result)
             {
-                $XMLPartieHistorique = new XMLPartieHistorique($_SESSION["partie"]);    //on crée un nouvel historique XML pour la partie
-                $_SESSION["partie"]->setEnCours(true);
+                $XMLPartieHistorique = new XMLPartieHistorique($partie);    //on crée un nouvel historique XML pour la partie
+
+                //création et ajout de victimes:
+                $victimeManager = new VictimeManager();
+                $victime = new Victime(null, $partie->getId(), "test", "test", 1, "rien", 10000);
+                $victimeManager->addVictime($victime);
+                $partie->setEnCours(true);
                 return new AjaxView("1", "text");
             }
         }

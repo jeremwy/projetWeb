@@ -1,7 +1,9 @@
 <?php
 require_once("Manager.php");
 require_once("Class/Message.php");
-class ChatManager extends Manager{
+
+class ChatManager extends Manager
+{
 
     private $message;
 

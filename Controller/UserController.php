@@ -2,6 +2,7 @@
 <?php
 require_once("Model/UserManager.php");
 require_once("Model/PartieManager.php");
+require_once("Model/VictimeManager.php");
 require_once("Model/Class/User.php");
 require_once("Vendor/Route.php");
 require_once("View/AjaxView.php");
@@ -10,7 +11,7 @@ class UserController extends Controller
 {
     public static function signup()
     {
-        //si l'utilisateur n'a pas encore rempli de formulaire d'inscription (rien dans POST) alors on affiche la vue permettant l'inscription
+        //si l'utilisateur n'a pas encore remplit de formulaire d'inscription (rien dans POST) alors on affiche la vue permettant l'inscription
         if(!isset($_POST) || empty($_POST))
         {
             $dReponse["title"] = "Inscription";
@@ -174,7 +175,6 @@ class UserController extends Controller
     public static function logout()
     {
         $partieManager = new PartieManager();
-        //il faut absolument appeler cette méthode avant de tenter de supprimer la session car après, l'id de la partie stocké en session sera inaccessible
         if(isset($_SESSION["user"]) && !empty($_SESSION["user"]))
         {    
             if(parent::isInPartie())
@@ -184,9 +184,11 @@ class UserController extends Controller
                 //si l'utilisateur est le maitre d'une partie alors on supprime cette partie.
                 if($userID == $maitrePartieJoueur)
                 {
-                    $partieManager->supprimerPartie($userID);
+                    $partieId = $_SESSION["partie"]->getID();
+                    $partieManager->supprimerPartie($partieId);
+                    $victimeManager = new VictimeManager();
+                    $victimeManager->supprimerVictimes($partieId);
                 }
-                unset($_SESSION["partie"]);
             }
             if(session_destroy())
             {
