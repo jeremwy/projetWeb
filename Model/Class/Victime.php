@@ -11,7 +11,7 @@ class Victime
     private $vie;           //la vie ne sera pas affichée telle quelle aux joueurs, elle permet d'implémenter le fait que les victimes "meurent" petit à petit et plus ou moins vite en fonction de leur état
 
 
-    public function __construct($id = null, $partie = null, $nom = null, $prenom = null, $etat = 0, $blessures = null, $vie = 300)
+    public function __construct($id = null, $partie = null, $nom = null, $prenom = null, $etat = 0, $blessures = array(), $vie = 10000)
     {
         $this->id = $id;
         $this->partie = $partie;
@@ -86,6 +86,14 @@ class Victime
     public function getBlessures()
     {
         return $this->blessures;
+    }
+
+    /*
+        Retourne le tableau des blessures sous le forme d'un chaîne de caractères.
+    */
+    public function getBlessuresString()
+    {
+        return implode(", ", $this->blessures);
     }
 
     public function setBlessures($blessures)

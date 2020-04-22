@@ -13,6 +13,17 @@ class PartieManager extends Manager
         $this->partie = $partie;
     }
 
+    /*
+        Setter
+    */
+    public function setPartie($partie)
+    {
+        $this->partie = $partie;
+    }
+
+    /*
+        Permet de récupérer la partie d'id $partieId depuis la base de données
+    */
     public function getPartie($partieId)
     {
         $stmt = $this->db->prepare("SELECT *
@@ -25,13 +36,18 @@ class PartieManager extends Manager
         return $partie;
     }
 
+    /*
+        Permet de récupérer la nom d'une partie d'id $partieId depuis la base de données
+    */
     public function getPartieNom($partieId)
     {
         $partie = $this->getPartie($partieId);
         return $partie->getNom();
     }
 
-    //retourne les parties qui ne sont pas encore lancées et qui penvent rejointes
+    /*
+        Retourne les parties qui ne sont pas encore lancées et qui penvent rejointes
+    */
     public function getParties()
     {
         $stmt = $this->db->prepare("SELECT *
@@ -43,12 +59,9 @@ class PartieManager extends Manager
         return $parties;
     }
 
-    public function setPartie($partie)
-    {
-        $this->partie = $partie;
-    }
-
-    //indique si l'identifiant est déjà utilisé
+    /*
+        Indique si l'identifiant est déjà utilisé
+    */
     public function isIdUsed($id)
     {
         $stmt = $this->db->prepare("SELECT *
@@ -74,6 +87,9 @@ class PartieManager extends Manager
         return $partie->isEnCours() == true;
     }
 
+    /*
+        Permet de sauvegarder la partie stockée en attribut
+    */
     public function savePartie()
     {
         $stmt = $this->db->prepare("INSERT INTO partie VALUES(:id, :nom, :date, :maitre, :chefPompier, :chefPolicier, :chefMedecin, :horloge, :enCours)");
@@ -90,6 +106,9 @@ class PartieManager extends Manager
         return $stmt->execute();
     }
 
+    /*
+        Permet de mettre à jour la partie stockée en attribut
+    */
     public function updatePartie($id)
     {
         $stmt = $this->db->prepare("UPDATE partie 
@@ -116,7 +135,9 @@ class PartieManager extends Manager
         return $stmt->execute();
     }
 
-    //retourne l'id de la partie dans lequel est l'utilisateur. Retourne false sinon.
+    /*
+        Retourne l'id de la partie dans lequel est l'utilisateur. Retourne false sinon.
+    */
     public function getUserPartie($userId)
     {
         $n = 4;
@@ -130,6 +151,9 @@ class PartieManager extends Manager
         return $stmt->fetch();
     }
     
+    /*
+        Retourne le maître d'une partie
+    */
     public function getMaitre($partieId)
     {
         $stmt = $this->db->prepare("SELECT maitre
@@ -141,6 +165,9 @@ class PartieManager extends Manager
         return $stmt->fetch()[0];
     }
 
+    /*
+        Permet de supprimer une partie d'id $partieId
+    */
     public function supprimerPartie($partieId)
     {
         $stmt = $this->db->prepare("DELETE FROM partie
@@ -153,6 +180,9 @@ class PartieManager extends Manager
         $chatManager->clearMessage($partieId);
     }
 
+    /*
+        Ajoute un rôle pour un certain utilisateur d'une partie
+    */
     public function addRole($role, $user, $partieId)
     {
         
@@ -165,12 +195,15 @@ class PartieManager extends Manager
         return $count = $stmt->rowCount();
     }
 
+    /*
+        Lance la partie
+    */
     public function lancerPartie()
     {
         $stmt = $this->db->prepare("UPDATE partie
                                     SET enCours=1
                                     WHERE id=:partieId");
-        $stmt->bindValue(":partieId", $_SESSION["partie"]->getId());
+        $stmt->bindValue(":partieId", $this->partie->getId());
         return $stmt->execute();
     }
 

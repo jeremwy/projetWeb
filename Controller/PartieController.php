@@ -5,6 +5,7 @@ require_once("Model/Class/Victime.php");
 require_once("Model/Class/Partie.php");
 require_once("View/AjaxView.php");
 require_once("Vendor/XMLPartieHistorique.php");
+require_once("Vendor/GenerateurVictimes.php");
 
 /*
 Cette classe est utilisée pour gérer les traitements relatifs à une partie (selection de rôles, lancer la partie ...).
@@ -241,7 +242,7 @@ class PartieController extends Controller
         }
 
         $user = parent::getUser();
-        $manager = new PartieManager();
+        $manager = new PartieManager($_SESSION["partie"]);
         $partie = $_SESSION["partie"];
 
         //il faut vérifier si l'utilisateur est dans une partie, s'il est le maître de cette partie et si la partie n'est pas déjà lancée
@@ -250,13 +251,19 @@ class PartieController extends Controller
             $result = $manager->lancerPartie();
             if($result)
             {
-                $XMLPartieHistorique = new XMLPartieHistorique($partie);    //on crée un nouvel historique XML pour la partie
-
-                //création et ajout de victimes:
+                //genération des victimes
+                $generateurVictimes = new GenerateurVictimes();
+                $victimes = $generateurVictimes->genererListe($_SESSION["partie"]->getID(), 5);
                 $victimeManager = new VictimeManager();
-                $victime = new Victime(null, $partie->getId(), "test", "test", 1, "rien", 10000);
-                $victimeManager->addVictime($victime);
-                $partie->setEnCours(true);
+                $victimeManager->addVictimes($victimes);
+
+                //on met à jour la partie stockée en session
+                $_SESSION["partie"]->setVictimes($victimes);
+                $_SESSION["partie"]->setEnCours(false);
+
+                //on crée un nouvel historique XML pour la partie
+                $XMLPartieHistorique = new XMLPartieHistorique($partie);    
+                
                 return new AjaxView("1", "text");
             }
         }

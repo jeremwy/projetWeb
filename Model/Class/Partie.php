@@ -1,4 +1,6 @@
 <?php
+require_once("Victime.php");
+
 class Partie
 {
     /*
@@ -15,8 +17,13 @@ class Partie
     private $chefMedecin;
     private $horloge;
     private $enCours;
+    /*
+        Cet attibut n'est pas stocké dans la table partie de la BD mais dans la table victime.
+        Il sert uniquement à accéder plus rapidement à la liste des victimes de la partie dans le code php (pas de besoin de faire plusieurs requêtes SQL car l'instance de la partie est en session).
+    */
+    private $victimes;  
 
-    public function __construct($id = null, $nom = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $horloge = 0, $enCours = 0)
+    public function __construct($id = null, $nom = null, $maitre = null, $chefPompier = null, $chefPolicier = null, $chefMedecin = null, $horloge = 0, $enCours = 0, $victimes = array())
     {
         $this->id = $id;
         $this->nom = $nom;
@@ -27,6 +34,7 @@ class Partie
         $this->chefMedecin = $chefMedecin;
         $this->horloge = $horloge;
         $this->enCours = $enCours;
+        $this->victimes = $victimes;
     }
 
     public function setId($id)
@@ -83,6 +91,12 @@ class Partie
         $this->enCours = $enCours;
     }
 
+    public function setVictime($victimes)
+    {
+        $this->victimes = $victimes;
+    }
+
+
     public function getId()
     {
         return $this->id;
@@ -131,6 +145,11 @@ class Partie
     public function isEnCours()
     {
         return $this->enCours;
+    }
+
+    public function getVictimes()
+    {
+        return $this->victimes;
     }
 
     public function getNbJoueur()

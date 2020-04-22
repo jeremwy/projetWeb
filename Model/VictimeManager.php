@@ -4,6 +4,9 @@ require_once("Class/Victime.php");
 
 class VictimeManager extends Manager
 {
+    /*
+        Ajoute une victime à la base de données.
+    */
     public function addVictime($victime)
     {
         $stmt = $this->db->prepare("INSERT INTO victime VALUES (:id, :partie, :nom, :prenom, :etat, :blessures, :vie)");
@@ -12,9 +15,28 @@ class VictimeManager extends Manager
         $stmt->bindValue(':nom', $victime->getNom());
         $stmt->bindValue(':prenom', $victime->getPrenom());
         $stmt->bindValue(':etat', $victime->getEtat());
-        $stmt->bindValue(':blessures', $victime->getBlessures());
+        $stmt->bindValue(':blessures', $victime->getBlessuresString());
         $stmt->bindValue(':vie', $victime->getVie());
         $stmt->execute();
+    }
+
+    /*
+        Ajoute plusieurs victimes à la base de données
+    */
+    public function addVictimes($victimes)
+    {
+        $stmt = $this->db->prepare("INSERT INTO victime VALUES (:id, :partie, :nom, :prenom, :etat, :blessures, :vie)");
+        foreach($victimes as $victime)
+        {
+            $stmt->bindValue(':id', null);  //comme l'identifiant est un auto_increment, il faut mettre null
+            $stmt->bindValue(':partie', $victime->getPartie());
+            $stmt->bindValue(':nom', $victime->getNom());
+            $stmt->bindValue(':prenom', $victime->getPrenom());
+            $stmt->bindValue(':etat', $victime->getEtat());
+            $stmt->bindValue(':blessures', $victime->getBlessuresString());
+            $stmt->bindValue(':vie', $victime->getVie());
+            $stmt->execute();
+        }
     }
 
     public function supprimerVictimes($partieId)
