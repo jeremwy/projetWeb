@@ -7,7 +7,7 @@
         $partie = $_SESSION["partie"];
         $user = $_SESSION["user"];
         switch($user->getId()) {
-            case ($partie->getMaitre()): include("PlateauIncludes/CommandesMaitre.php");
+            case ($partie->getMaitre()): include("PlateauIncludes/TableauBordMaitre.php");
         }
     ?>
 

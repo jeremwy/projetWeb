@@ -36,7 +36,8 @@ class PartieController extends Controller
             if($partie->getMaitre() == parent::getUser()->getId())
             {
                 $dReponse["js"][1] = "maitreJeu.js";
-                $dReponse["maitre"] = 1;    //permet à la vue de savoir si le joueur est le maître du jeu (affichage différent).
+                $victimeManager = new VictimeManager();
+                $dReponse["victimes"] = $victimeManager->getVictimes($_SESSION["partie"]->getID());
             }
             return new View("Partie/plateauPartie.php", $dReponse);
         }

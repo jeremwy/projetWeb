@@ -226,14 +226,35 @@ p, a, label, td
 #plateau{
     position: relative;
     width: 100%;
-    height: 75vh;
+    min-height: 75vh;
 }
-  
+
 #carte{
     width: 100%;
     height: 70vh;
 }
-  
+
+.commands_board{
+    border: solid 1px black;
+    width: 100%;
+}
+
+.tableauVictimes{
+    width: 100%;
+    display: flex;
+}
+
+.carteVictime{
+    border: solid 1px green;
+    margin: 20px;
+    padding: 20px;
+    max-width: 150px;
+}
+
+.carteVictime > p{
+    overflow-wrap: break-word;
+}
+
 #toggleButtonContainer{
     position: relative;
     width: 70px;
