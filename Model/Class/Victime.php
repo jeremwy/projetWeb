@@ -31,8 +31,6 @@ class Victime
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
     }
 
 
@@ -44,8 +42,6 @@ class Victime
     public function setPartie($partie)
     {
         $this->partie = $partie;
-
-        return $this;
     }
 
     public function getNom()
@@ -56,8 +52,6 @@ class Victime
     public function setNom($nom)
     {
         $this->nom = $nom;
-
-        return $this;
     }
 
     public function getPrenom()
@@ -68,8 +62,6 @@ class Victime
     public function setPrenom($prenom)
     {
         $this->prenom = $prenom;
-
-        return $this;
     }
 
     public function getEtat()
@@ -85,8 +77,6 @@ class Victime
     public function setEtat($etat)
     {
         $this->etat = $etat;
-
-        return $this;
     }
 
     public function getBlessures()
@@ -105,8 +95,6 @@ class Victime
     public function setBlessures($blessures)
     {
         $this->blessures = $blessures;
-
-        return $this;
     }
 
     public function getVie()
@@ -117,8 +105,6 @@ class Victime
     public function setVie($vie)
     {
         $this->vie = $vie;
-
-        return $this;
     }
 
      /*

@@ -55,8 +55,6 @@ class Message
     public function setNom($nom)
     {
         $this->nom = $nom;
-
-        return $this;
     }
 
     public function getPrenom()
@@ -67,8 +65,6 @@ class Message
     public function setPrenom($prenom)
     {
         $this->prenom = $prenom;
-
-        return $this;
     }
 }
 ?>
