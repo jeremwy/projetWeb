@@ -15,7 +15,6 @@ class XMLPartieHistorique
         $this->partie = $partie;
         $this->fichier_xml_path = FOLDER_ROOT . SEPARATOR . "src" . SEPARATOR . "xml" . SEPARATOR . $partie->getId() . "_historique.xml";
         $this->load();
-        $this->save();
     }
 
     /*
@@ -54,11 +53,39 @@ class XMLPartieHistorique
 
         foreach($attributs as $nom => $valeur)  //pour chaque attribut sauf l'attribut "enCours" (on s'en fiche car on se doute que la partie était en cours au moment où elle était jouée)
         {
-            if($nom != "enCours")
+            if($nom == "victimes")  //si l'on veut ajouter la tableau des victimes, il faut passer par la méthode ajouterVictimes
+            {
+                $victimesXML = $partieXML->addChild("victimes");
+                $this->ajouterVictimes($victimesXML, $valeur);
+            }
+            elseif($nom != "enCours")
                 $partieXML->addChild($nom, $valeur); //on l'ajoute avec sa valeur à l'élément parte
         }
 
         $this->fichier_xml = $historiqueXML;    //le contenu du fichier XML est sauvegarder dans la variable fichier_XML
+        $this->save();
+    }
+
+    /*
+        Ajoute un tableau de victimes de la partie au fichier XML
+    */
+    private function ajouterVictimes($victimesXML, $victimes)
+    {
+        echo "ajout des victimes";
+        foreach($victimes as $victime)
+        {
+            $victimeXML = $victimesXML->addChild("victime");
+            $attributs = $victime->getVars();
+            foreach($attributs as $nom => $valeur)      //comme pour la partie on ajoute les attributs et leur valeur
+            {
+                if($nom == "blessures")     //si l'attribut en cours est "blessures" alors ajoute la valeur de retour de getBlessuresString()
+                    $victimeXML->addChild($nom, $victime->getBlessuresString());
+                elseif($nom == "etat")     //si l'attribut en cours est "etat" alors ajoute la valeur de retour de getEtatString()
+                $victimeXML->addChild($nom, $victime->getEtatString());
+                elseif($nom != "id" && $nom != "partie")    //pas besoin d'écrire les attributs id et identifiant de partie car ce sont des informations propres à la BD qui seront supprimés une fois la partie terminée      
+                    $victimeXML->addChild($nom, $valeur);
+            }
+        }
     }
 
     public function ajoutEvenement($evenement, $description, $temps)

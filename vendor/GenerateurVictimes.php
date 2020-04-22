@@ -63,7 +63,7 @@ class GenerateurVictimes
         for($i = 0; $i < $n; $i++)
         {
             $isSauf = random_int(0, 1);     //permet de définir si la personne est sauve
-            if($isSauf > 0.85)              //si $isSauf est supérieur à 0.85 (15% de chance) alors la personne est sauve
+            if($isSauf > 0.95)              //si $isSauf est supérieur à 0.95 (5% de chance) alors la personne est sauve
                 array_push($victimes, new Victime(null, $partieId, $noms[$i], $prenoms[$i]));   //voir constructeur classe Victime
             else                            //sinon elle a au moins une blessure
             {

@@ -91,7 +91,7 @@ class Partie
         $this->enCours = $enCours;
     }
 
-    public function setVictime($victimes)
+    public function setVictimes($victimes)
     {
         $this->victimes = $victimes;
     }

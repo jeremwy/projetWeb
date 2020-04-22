@@ -248,7 +248,8 @@ class PartieController extends Controller
         //il faut vérifier si l'utilisateur est dans une partie, s'il est le maître de cette partie et si la partie n'est pas déjà lancée
         if(parent::isInPartie() && $partie->getMaitre() == $user->getId() && !$manager->isPartieEnCours($partie->getId()))
         {
-            $result = $manager->lancerPartie();
+            // $result = $manager->lancerPartie();
+            $result = true;
             if($result)
             {
                 //genération des victimes
@@ -258,9 +259,9 @@ class PartieController extends Controller
                 $victimeManager->addVictimes($victimes);
 
                 //on met à jour la partie stockée en session
+                $_SESSION["partie"]->setEnCours(true);
                 $_SESSION["partie"]->setVictimes($victimes);
-                $_SESSION["partie"]->setEnCours(false);
-
+                var_dump($_SESSION);
                 //on crée un nouvel historique XML pour la partie
                 $XMLPartieHistorique = new XMLPartieHistorique($partie);    
                 
