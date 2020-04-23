@@ -33,10 +33,16 @@ class PartieController extends Controller
         if($partie && $partie->isEnCours())
         {
             $dReponse["title"] = htmlspecialchars($partie->getNom());
+            $dReponse["partieId"] = $partie->getID();
             $dReponse["js"][0] = "chat.js";
+            array_push($dReponse["js"], "three.js-master/build/three.js");
+            array_push($dReponse["js"], "three.js-master/examples/js/controls/OrbitControls.js");
+            array_push($dReponse["js"], "three.js-master/examples/js/controls/DragControls.js");
+            array_push($dReponse["js"], "three.js-master/examples/js/loaders/GLTFLoader.js");
+            array_push($dReponse["js"], "plateauThreeJs.js");
             if($partie->getMaitre() == parent::getUser()->getId())
             {
-                $dReponse["js"][1] = "maitreJeu.js";
+                array_push($dReponse["js"], "maitreJeu.js");
                 $victimeManager = new VictimeManager();
                 $dReponse["victimes"] = $victimeManager->getVictimes($_SESSION["partie"]->getID());
             }
@@ -248,8 +254,7 @@ class PartieController extends Controller
         //il faut vérifier si l'utilisateur est dans une partie, s'il est le maître de cette partie et si la partie n'est pas déjà lancée
         if(parent::isInPartie() && $partie->getMaitre() == $user->getId() && !$manager->isPartieEnCours($partie->getId()))
         {
-            // $result = $manager->lancerPartie();
-            $result = true;
+            $result = $manager->lancerPartie();
             if($result)
             {
                 //genération des victimes
@@ -261,7 +266,6 @@ class PartieController extends Controller
                 //on met à jour la partie stockée en session
                 $_SESSION["partie"]->setEnCours(true);
                 $_SESSION["partie"]->setVictimes($victimes);
-                var_dump($_SESSION);
                 //on crée un nouvel historique XML pour la partie
                 $XMLPartieHistorique = new XMLPartieHistorique($partie);    
                 

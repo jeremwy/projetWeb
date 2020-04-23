@@ -1,2 +1,5 @@
 RewriteEngine On
+
+RewriteRule (.*)\.js src/js/$1.js [L]
+RewriteRule Objets/(.*)\.gltf src/js/Objets/$1.gltf [L]
 RewriteRule .* index.php

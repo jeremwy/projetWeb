@@ -2,7 +2,9 @@
 require_once("Controller.php");
 require_once("Model/PartieManager.php");
 require_once("Model/VictimeManager.php");
+require_once("Model/VoitureManager.php");
 require_once("Model/Class/Partie.php");
+require_once("Model/Class/Voiture.php");
 require_once("View/AjaxView.php");
 require_once("vendor/XMLPartieHistorique.php");
 
@@ -27,12 +29,10 @@ class PartieEventController extends Controller
             //on ajoute $vitesse seconde(s) à l'horloge de la partie dans la base de données.
             $manager = new PartieManager();
             $manager->ajoutHorloge($vitesse);
-            var_dump($manager->getHorloge());
             $victimeManager = new VictimeManager();
             $victimes = $victimeManager->getVictimes($_SESSION["partie"]->getId());
             foreach($victimes as $victime)
             {
-                var_dump($victime->getVie());
                 if($victime->getVie() > 0)
                     $victime->setVie($victime->getVie() - 1.2 * $victime->getEtat() * $vitesse);   //modifier le ration si besoin
             }
@@ -47,9 +47,47 @@ class PartieEventController extends Controller
     }
 
     /*
-        Ajout un événenement "$evenement" (décrit par "$description") se produisant à l'instant "$temps" au fichier historique de la partie.
+        Permet d'ajouter un objets (véhicule ...) dans la base de données.
+        Le serveur reçoit une requête ajax pour indiquer ce que l'utilisateur souhaite ajouter.
+        Le serveur vérifie ensuite si cela est possible et renvoie le résultat (0 ou 1).
     */
-    private static function ajoutEvenement($evenement, $description, $temps)
+    public static function ajout()
+    {
+        //si l'utilisateur n'eset ps connecté ou n'est pas dans une partie alors on renvoie un page 404 erreur.
+        //de même si les variables POST nécessaires ne sont pas envoyées ou vides.
+        if(!parent::isConnected() || !parent::isInPartie() || !(isset($_POST["objet"]) && isset($_POST["fonction"]) && isset($_POST["x"]) && isset($_POST["y"]) && isset($_POST["z"])) || $_POST["objet"] == "" || $_POST["fonction"] == "" || $_POST["x"] == "" || $_POST["y"] == "" || $_POST["z"] == "")
+        {
+            $dReponse["title"] = "Page introuvable";
+            return new View("Error/404.html", $dReponse);
+        }
+        else
+        {   
+            //on convertit les coordonnées en entiers (les variables POST contiennent des chaînes de caractères)
+            $x = intval($_POST["x"]);
+            $y = intval($_POST["y"]);
+            $z = intval($_POST["z"]);
+            if($_POST["objet"] == "Voiture")    //si l'utilisateur souhaite ajouter une voiture
+            {
+                //on crée un nouvelle voiture et on l'ajoute à la base
+                $voiture = new Voiture(null, $_SESSION["partie"]->getId(), $_POST["fonction"], $x, $y, $z);
+                $voitureManager = new VoitureManager($voiture);
+                $result = $voitureManager->save();
+                if($result)
+                {
+                    self::ajoutEvenement("ajoutVoiture", "Ajout d'une voiture de " . $_POST["fonction"]);
+                    return new AjaxView("1", "text");
+                }
+                else
+                    return new AjaxView("0", "text");
+            }
+            return new AjaxView("0", "text");
+        }
+    }
+
+    /*
+        Ajout un événenement "$evenement" (décrit par "$description") se produisant à l'instant t au fichier historique de la partie.
+    */
+    private static function ajoutEvenement($evenement, $description)
     {
         /*
             L'horloge est mise à jour de manière périodique par le maître du jeu (requête AJAX).

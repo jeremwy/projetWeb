@@ -1,7 +1,7 @@
-<h1 id="partieId"><?php echo $dReponse["title"]; ?></h1>
+<h1><?php echo $dReponse["title"] ?></h1>
 
 <div id="plateau">
-    <div id="carte"></div>
+    <div id="carte" onload="init()"></div>
     
     <?php
         $partie = $_SESSION["partie"];
@@ -12,6 +12,8 @@
     ?>
 
 </div>
+
+<p id="partieId" class="hidden"><?php echo $dReponse["partieId"]; ?></p>
 
 <aside id="asideChat">
     <?php include("View/Chat/chat.php"); ?>

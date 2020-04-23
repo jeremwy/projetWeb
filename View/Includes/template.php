@@ -35,13 +35,13 @@
     </div>
     
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="<?php echo SITE_ROOT; ?>src/js/switch_theme.js"></script>'
+    <script src="<?php echo SITE_ROOT; ?>switch_theme.js"></script>
     <?php
       if(isset($dReponse["js"]))
       {
         foreach($dReponse["js"] as $url)
         {
-          echo '<script src="' . SITE_ROOT . 'src/js/' .$url . '"></script>';
+          echo '<script src="' . SITE_ROOT .$url . '"></script>';
         }
       }
     ?>
